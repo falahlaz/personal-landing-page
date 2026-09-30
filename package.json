@@ -1,0 +1,15 @@
+{
+  "name": "personal-landing-page",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Al Falah Lazuardi — personal landing page, deployed as a Cloudflare Worker with static assets.",
+  "scripts": {
+    "dev": "wrangler dev",
+    "preview": "wrangler dev --remote",
+    "deploy": "wrangler deploy",
+    "check": "wrangler deploy --dry-run --outdir .wrangler/dry-run"
+  },
+  "devDependencies": {
+    "wrangler": "^4.144.0"
+  }
+}
