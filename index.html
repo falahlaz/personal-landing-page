@@ -4,948 +4,333 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Al Falah Lazuardi — Backend Engineer · Node.js · TypeScript · Golang</title>
+  <meta name="description" content="Al Falah Lazuardi — backend engineer with 5 years shipping production systems in Node.js, TypeScript and Golang. Open to roles worldwide.">
+  <script>
+    (function () {
+      var t = null;
+      try { t = localStorage.getItem('theme'); } catch (e) {}
+      if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      document.documentElement.dataset.theme = t;
+      document.documentElement.classList.add('js');
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --bg: #05030d;
-      --glass: rgba(255, 255, 255, 0.045);
-      --glass-hover: rgba(255, 255, 255, 0.07);
-      --glass-border: rgba(255, 255, 255, 0.09);
-      --glass-border-hover: rgba(255, 255, 255, 0.18);
-      --text: #f0effe;
-      --muted: rgba(240, 239, 254, 0.48);
-      --muted2: rgba(240, 239, 254, 0.65);
-      --purple: #c4b5fd;
-      --cyan: #67e8f9;
-      --pink: #f0abfc;
-      --grad: linear-gradient(135deg, #c4b5fd 0%, #67e8f9 100%);
-      --grad-subtle: linear-gradient(135deg, rgba(196,181,253,0.15) 0%, rgba(103,232,249,0.15) 100%);
-    }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      line-height: 1.6;
-      overflow-x: hidden;
-    }
-
-    /* ── AMBIENT BACKGROUND ── */
-    .orbs {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(90px);
-      opacity: 0.28;
-    }
-    .orb-1 {
-      width: 700px; height: 700px;
-      background: radial-gradient(circle, #6d28d9, transparent 70%);
-      top: -200px; left: -150px;
-      animation: drift1 22s ease-in-out infinite;
-    }
-    .orb-2 {
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, #0c4a6e, transparent 70%);
-      bottom: -150px; right: -100px;
-      animation: drift2 28s ease-in-out infinite;
-    }
-    .orb-3 {
-      width: 450px; height: 450px;
-      background: radial-gradient(circle, #134e4a, transparent 70%);
-      top: 45%; left: 45%;
-      animation: drift3 18s ease-in-out infinite;
-    }
-    .orb-4 {
-      width: 350px; height: 350px;
-      background: radial-gradient(circle, #701a75, transparent 70%);
-      top: 20%; right: 10%;
-      animation: drift1 32s ease-in-out infinite reverse;
-      opacity: 0.18;
-    }
-    @keyframes drift1 {
-      0%,100% { transform: translate(0,0) scale(1); }
-      33%      { transform: translate(40px,-50px) scale(1.05); }
-      66%      { transform: translate(-30px, 30px) scale(0.97); }
-    }
-    @keyframes drift2 {
-      0%,100% { transform: translate(0,0); }
-      40%      { transform: translate(-50px, 40px); }
-      70%      { transform: translate(20px,-30px); }
-    }
-    @keyframes drift3 {
-      0%,100% { transform: translate(-50%,-50%) scale(1); }
-      50%      { transform: translate(-50%,-50%) scale(1.2); }
-    }
-
-    /* dot grid overlay */
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-      background-image: radial-gradient(rgba(255,255,255,0.035) 1px, transparent 1px);
-      background-size: 44px 44px;
-      pointer-events: none;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      padding: 1.25rem 2.5rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: all 0.4s;
-    }
-    nav.scrolled {
-      background: rgba(5, 3, 13, 0.7);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border-bottom: 1px solid var(--glass-border);
-    }
-    .nav-logo {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-      text-decoration: none;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .nav-links {
-      display: flex;
-      gap: 0.25rem;
-      list-style: none;
-    }
-    .nav-links a {
-      font-size: 0.8rem;
-      color: var(--muted);
-      text-decoration: none;
-      padding: 0.4rem 0.875rem;
-      border-radius: 100px;
-      transition: all 0.2s;
-    }
-    .nav-links a:hover {
-      color: var(--text);
-      background: var(--glass);
-    }
-
-    /* ── CONTAINER ── */
-    .container {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 2.5rem;
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ── GLASS UTILITY ── */
-    .glass-card {
-      background: var(--glass);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      transition: background 0.3s, border-color 0.3s;
-    }
-    .glass-card:hover {
-      background: var(--glass-hover);
-      border-color: var(--glass-border-hover);
-    }
-
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 100px 2rem 4rem;
-    }
-    .hero-inner {
-      display: grid;
-      gap: 2rem;
-      place-items: center;
-      max-width: 760px;
-    }
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.45rem 1.1rem;
-      border-radius: 100px;
-      border: 1px solid var(--glass-border);
-      background: var(--glass);
-      backdrop-filter: blur(12px);
-      font-size: 0.78rem;
-      color: var(--muted2);
-    }
-    .hero-badge .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--cyan);
-      box-shadow: 0 0 8px var(--cyan);
-      animation: pulse 2.5s ease-in-out infinite;
-    }
-    @keyframes pulse {
-      0%,100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.7); }
-    }
-
-    h1.hero-name {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(3rem, 8vw, 5.5rem);
-      font-weight: 800;
-      line-height: 1.0;
-      letter-spacing: -0.03em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .hero-title-sub {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-      font-weight: 300;
-      color: var(--muted2);
-      letter-spacing: 0.01em;
-    }
-    .hero-title-sub span { color: var(--text); font-weight: 500; }
-
-    .hero-metrics {
-      display: flex;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .metric-pill {
-      padding: 0.6rem 1.25rem;
-      border-radius: 12px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      backdrop-filter: blur(12px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 90px;
-    }
-    .metric-num {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.6rem;
-      font-weight: 700;
-      line-height: 1;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .metric-lbl {
-      font-size: 0.62rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      margin-top: 0.3rem;
-      white-space: nowrap;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 0.875rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .btn {
-      font-family: 'Outfit', sans-serif;
-      font-size: 0.875rem;
-      font-weight: 600;
-      text-decoration: none;
-      border-radius: 12px;
-      padding: 0.85rem 2rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: all 0.25s;
-    }
-    .btn-grad {
-      background: var(--grad);
-      color: #0a0218;
-    }
-    .btn-grad:hover { opacity: 0.88; transform: translateY(-1px); }
-    .btn-glass {
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      color: var(--text);
-      backdrop-filter: blur(12px);
-    }
-    .btn-glass:hover {
-      background: var(--glass-hover);
-      border-color: var(--glass-border-hover);
-      transform: translateY(-1px);
-    }
-
-    /* ── SECTIONS ── */
-    section { padding: 6rem 0; }
-
-    .sec-hd {
-      text-align: center;
-      margin-bottom: 3.5rem;
-    }
-    .sec-eyebrow {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.14em;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 0.875rem;
-    }
-    .sec-title {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(1.75rem, 4vw, 2.25rem);
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: -0.02em;
-    }
-
-    /* ── ABOUT ── */
-    .about-card {
-      padding: 3rem;
-      display: grid;
-      grid-template-columns: 1fr 2fr;
-      gap: 3.5rem;
-    }
-    .about-info { display: grid; gap: 1.5rem; align-content: start; }
-    .info-block {}
-    .info-lbl {
-      font-size: 0.65rem;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--purple);
-      margin-bottom: 0.4rem;
-      font-weight: 600;
-    }
-    .info-val {
-      font-size: 0.85rem;
-      color: var(--muted2);
-      line-height: 1.75;
-    }
-    .info-val a { color: var(--text); text-decoration: none; }
-    .info-val a:hover { color: var(--cyan); }
-
-    .about-text p {
-      font-size: 0.95rem;
-      line-height: 1.85;
-      color: var(--muted2);
-      margin-bottom: 1.25rem;
-    }
-    .about-text p:last-child { margin-bottom: 0; }
-    .about-text strong {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-weight: 700;
-    }
-    .about-text em { color: var(--text); font-style: normal; }
-
-    /* ── EXPERIENCE ── */
-    .exp-list { display: grid; gap: 1.5rem; }
-    .exp-card { padding: 2.25rem; }
-    .exp-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
-      flex-wrap: wrap;
-    }
-    .exp-co {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.3rem;
-    }
-    .exp-role-badge {
-      display: inline-block;
-      font-size: 0.75rem;
-      font-weight: 600;
-      padding: 0.3rem 0.875rem;
-      border-radius: 100px;
-      background: var(--grad-subtle);
-      border: 1px solid rgba(196,181,253,0.2);
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: 0.02em;
-    }
-    .exp-role-wrap {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .exp-period-badge {
-      font-size: 0.75rem;
-      color: var(--muted);
-      padding: 0.35rem 0.875rem;
-      border-radius: 100px;
-      border: 1px solid var(--glass-border);
-      background: var(--glass);
-      white-space: nowrap;
-    }
-    .exp-tag-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1.5rem; }
-    .exp-tag {
-      font-size: 0.68rem;
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      border: 1px solid var(--glass-border);
-      color: var(--muted);
-      background: var(--glass);
-    }
-    .exp-bullets { list-style: none; display: grid; gap: 0.75rem; }
-    .exp-bullets li {
-      font-size: 0.875rem;
-      color: var(--muted2);
-      padding-left: 1.5rem;
-      position: relative;
-      line-height: 1.7;
-    }
-    .exp-bullets li::before {
-      content: '▹';
-      position: absolute;
-      left: 0;
-      color: var(--purple);
-      opacity: 0.7;
-    }
-    .exp-bullets li strong {
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-weight: 700;
-    }
-    .exp-bullets li em { color: var(--text); font-style: normal; }
-
-    /* metrics highlight */
-    .metric-inline {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 0.15rem 0.5rem;
-      border-radius: 6px;
-      background: rgba(196,181,253,0.1);
-      border: 1px solid rgba(196,181,253,0.2);
-      font-family: 'Outfit', sans-serif;
-      font-weight: 700;
-      font-style: normal !important;
-      font-size: 0.8rem;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    /* ── SKILLS ── */
-    .skills-card { padding: 2.5rem 3rem; }
-    .skills-inner { display: grid; gap: 2rem; }
-    .skill-group {}
-    .sg-label {
-      font-size: 0.68rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--purple);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-    .sg-label::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(196,181,253,0.3), transparent);
-    }
-    .sg-pills { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .sg-pill {
-      font-size: 0.8rem;
-      font-weight: 500;
-      padding: 0.45rem 1rem;
-      border-radius: 10px;
-      background: var(--glass);
-      border: 1px solid var(--glass-border);
-      color: var(--muted2);
-      cursor: default;
-      transition: all 0.2s;
-    }
-    .sg-pill:hover {
-      background: var(--glass-hover);
-      border-color: rgba(196,181,253,0.3);
-      color: var(--text);
-    }
-    .sg-pill.hi {
-      border-color: rgba(196,181,253,0.2);
-      color: var(--text);
-    }
-
-    /* ── EDUCATION ── */
-    .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-    .edu-card { padding: 2rem 2.25rem; }
-    .edu-period {
-      font-size: 0.7rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--cyan);
-      margin-bottom: 0.875rem;
-    }
-    .edu-deg {
-      font-family: 'Outfit', sans-serif;
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 0.3rem;
-    }
-    .edu-school { font-size: 0.85rem; color: var(--muted2); margin-bottom: 0.75rem; }
-    .edu-award {
-      font-size: 0.75rem;
-      color: var(--muted);
-      line-height: 1.7;
-      border-top: 1px solid var(--glass-border);
-      padding-top: 0.75rem;
-      margin-top: 0.75rem;
-    }
-    .edu-award::before { content: '🏆 '; }
-
-    /* ── CONTACT ── */
-    #contact { text-align: center; }
-    .contact-wrap { max-width: 640px; margin: 0 auto; }
-    .contact-card { padding: 3.5rem; }
-    .contact-email {
-      font-family: 'Outfit', sans-serif;
-      font-size: clamp(1.1rem, 3vw, 1.5rem);
-      font-weight: 700;
-      text-decoration: none;
-      background: var(--grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      display: inline-block;
-      margin: 1.5rem 0 2rem;
-      transition: opacity 0.2s;
-    }
-    .contact-email:hover { opacity: 0.75; }
-    .contact-desc {
-      font-size: 0.9rem;
-      color: var(--muted2);
-      line-height: 1.75;
-      margin-bottom: 2.5rem;
-    }
-    .contact-meta {
-      display: flex;
-      justify-content: center;
-      gap: 0.75rem;
-      flex-wrap: wrap;
-    }
-    .meta-chip {
-      font-size: 0.8rem;
-      color: var(--muted2);
-      padding: 0.45rem 1.1rem;
-      border-radius: 100px;
-      border: 1px solid var(--glass-border);
-      background: var(--glass);
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      padding: 2rem;
-      text-align: center;
-      font-size: 0.72rem;
-      color: var(--muted);
-      position: relative;
-      z-index: 1;
-    }
-
-    /* ── REVEAL ── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .reveal.show { opacity: 1; transform: translateY(0); }
-    .reveal-d1 { transition-delay: 0.08s; }
-    .reveal-d2 { transition-delay: 0.16s; }
-    .reveal-d3 { transition-delay: 0.24s; }
-
-    /* ── SCROLLBAR ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: rgba(196,181,253,0.3); border-radius: 2px; }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 700px) {
-      nav { padding: 1rem 1.25rem; }
-      .container { padding: 0 1.25rem; }
-      .about-card { grid-template-columns: 1fr; gap: 2rem; padding: 2rem; }
-      .edu-grid { grid-template-columns: 1fr; }
-      .contact-card { padding: 2rem 1.5rem; }
-      .exp-card { padding: 1.75rem; }
-      .skills-card { padding: 2rem; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/bento.css">
 </head>
 <body>
 
-  <!-- AMBIENT ORBS -->
-  <div class="orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
-  </div>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <a href="#top" class="logo" aria-label="Home">AF</a>
+    <nav class="top-nav">
+      <a href="#about">About</a>
+      <a href="#experience">Work</a>
+      <a href="#skills">Skills</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="top-actions">
+      <button class="kbd-btn" id="openPalette" type="button" aria-label="Open command palette">
+        <span>Search</span><kbd>⌘K</kbd>
+      </button>
+      <button class="theme-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">
+        <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5a8.5 8.5 0 1 0 11 11z"/></svg>
+      </button>
+    </div>
+  </header>
 
-  <!-- NAV -->
-  <nav id="nav">
-    <a href="#hero" class="nav-logo">falah.dev</a>
-    <ul class="nav-links">
-      <li><a href="#about">About</a></li>
-      <li><a href="#experience">Work</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+  <main class="bento" id="top">
 
-  <!-- HERO -->
-  <section id="hero">
-    <div class="hero-inner">
-      <div class="hero-badge">
-        <span class="dot"></span>
-        Actively looking · Worldwide · Remote or On-site
+    <!-- HERO -->
+    <section class="tile t-hero c2 r2">
+      <div class="hero-top">
+        <button class="avatar" id="avatar" type="button" aria-label="Spin the avatar"><span>AF</span></button>
+        <span class="chip chip-live"><i class="dot"></i>Open to work</span>
       </div>
-      <h1 class="hero-name">Al Falah Lazuardi</h1>
-      <p class="hero-title-sub">
-        <span>Backend Engineer</span> · Node.js · TypeScript · Golang
-        · 5 years shipping production systems
+      <h1 class="hero-name" id="heroName">Al Falah <em>Lazuardi</em></h1>
+      <p class="hero-sub">
+        Backend Engineer · Node.js · TypeScript · Golang.
+        I ship fast backends — <span class="hl">then I make them faster.</span>
       </p>
-      <div class="hero-metrics">
-        <div class="metric-pill">
-          <span class="metric-num">12×</span>
-          <span class="metric-lbl">API throughput</span>
-        </div>
-        <div class="metric-pill">
-          <span class="metric-num">60%</span>
-          <span class="metric-lbl">query latency saved</span>
-        </div>
-        <div class="metric-pill">
-          <span class="metric-num">3K+</span>
-          <span class="metric-lbl">records per job</span>
-        </div>
-        <div class="metric-pill">
-          <span class="metric-num">15K</span>
-          <span class="metric-lbl">daily transactions</span>
-        </div>
-      </div>
       <div class="hero-cta">
-        <a href="mailto:alfalahlazuardim@gmail.com" class="btn btn-grad">Email Me Directly →</a>
-        <a href="#experience" class="btn btn-glass">See My Work</a>
+        <a href="mailto:alfalahlazuardim@gmail.com" class="btn btn-ink">Email me <span>→</span></a>
+        <a href="#experience" class="btn btn-line">See my work</a>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="container">
-      <div class="sec-hd">
-        <div class="sec-eyebrow">About Me</div>
-        <h2 class="sec-title">I ship fast backends. Then I make them faster.</h2>
+    <!-- GLOBE -->
+    <section class="tile t-globe r2" aria-label="Location">
+      <div class="tile-label light">Location</div>
+      <div class="globe-wrap"><canvas id="globe" aria-hidden="true"></canvas></div>
+      <div class="globe-info">
+        <strong>East Jakarta, Indonesia</strong>
+        <span><span id="clock">--:--</span> WIB · Remote or relocate worldwide</span>
       </div>
-      <div class="glass-card about-card reveal">
-        <div class="about-info">
-          <div class="info-block">
-            <div class="info-lbl">Location</div>
-            <div class="info-val">East Jakarta, Indonesia<br>Remote or relocate worldwide</div>
-          </div>
-          <div class="info-block">
-            <div class="info-lbl">Contact</div>
-            <div class="info-val">
-              <a href="mailto:alfalahlazuardim@gmail.com">alfalahlazuardim@gmail.com</a><br>
-              +62 851 7300 9061
-            </div>
-          </div>
-          <div class="info-block">
-            <div class="info-lbl">Visa</div>
-            <div class="info-val">Open to visa sponsorship<br>or remote worldwide</div>
-          </div>
+      <span class="globe-hint">drag to spin</span>
+    </section>
+
+    <!-- STATUS -->
+    <section class="tile t-status">
+      <div class="tile-label">Availability</div>
+      <p class="status-big">Full-time roles, <em>worldwide</em></p>
+      <div class="status-tags">
+        <span>Remote</span><span>On-site</span><span>Visa sponsorship welcome</span>
+      </div>
+    </section>
+
+    <!-- 12x -->
+    <section class="tile t-race" id="race" tabindex="0" aria-label="12x API throughput">
+      <div class="tile-label">API throughput</div>
+      <div class="big-num"><span data-count="12">12</span>×</div>
+      <div class="race">
+        <div class="lane"><span>before</span><b class="track"><i class="runner slow"></i></b></div>
+        <div class="lane"><span>after</span><b class="track"><i class="runner fast"></i></b></div>
+      </div>
+      <p class="tile-foot">O(n²) → O(n log n) · hover to race</p>
+    </section>
+
+    <!-- LATENCY -->
+    <section class="tile t-latency c2" aria-label="Query latency reduced 60 percent">
+      <div class="lat-head">
+        <div>
+          <div class="tile-label">Query latency</div>
+          <div class="big-num">−<span data-count="60">60</span>%</div>
         </div>
-        <div class="about-text">
-          <p>
-            I've spent five years shipping <strong>backend systems in production</strong> —
-            ride-hailing, fintech, and government infrastructure. My primary stack is
-            Node.js and TypeScript; I've been writing Golang for microservices for the past two years.
-          </p>
-          <p>
-            Performance is where I go deep. I cut API response time <strong>12×</strong>
-            in a single refactor by rearchitecting O(n²) logic to O(n log n). I reduced
-            database query latency by <strong>60%</strong> through index analysis and query
-            rewrites. Every optimization I ship comes with measured before/after data.
-          </p>
-          <p>
-            I use <em>AI-assisted tooling</em> (Claude Code, GPT Codex) as a core part of
-            my daily workflow — not occasionally, but as a productivity layer that lets me
-            move faster without cutting corners. I'm looking for
-            <strong>backend or software engineering roles worldwide</strong> —
-            remote or on-site. Open to visa sponsorship where needed.
-          </p>
-        </div>
+        <div class="lat-readout" id="latReadout">hover the chart</div>
       </div>
-    </div>
-  </section>
+      <svg class="lat-chart" id="latChart" viewBox="0 0 600 150" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="latFill" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stop-color="currentColor" stop-opacity=".22"/>
+            <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path id="latArea" fill="url(#latFill)"/>
+        <path id="latLine" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+        <line id="latDeploy" class="lat-deploy" y1="8" y2="150" vector-effect="non-scaling-stroke"/>
+        <line id="latGuide" class="lat-guide" y1="0" y2="150" vector-effect="non-scaling-stroke"/>
+      </svg>
+      <i class="lat-dot" id="latDot" aria-hidden="true"></i>
+      <p class="tile-foot">Illustrative shape · index analysis + query rewrites · zero downtime</p>
+    </section>
 
-  <!-- EXPERIENCE -->
-  <section id="experience">
-    <div class="container">
-      <div class="sec-hd">
-        <div class="sec-eyebrow">Work Experience</div>
-        <h2 class="sec-title">5 years. 3 companies. Systems that still run in production.</h2>
+    <!-- IMPORT -->
+    <section class="tile t-import">
+      <div class="tile-label">Records per import job</div>
+      <div class="big-num"><span id="importCount">3,000</span>+</div>
+      <div class="dots" id="dots" aria-hidden="true"></div>
+      <button class="mini-btn" id="importBtn" type="button">▶ Run import</button>
+    </section>
+
+    <!-- TRANSACTIONS -->
+    <section class="tile t-tx">
+      <div class="tile-label">Daily transactions</div>
+      <div class="big-num"><span data-count="15000" data-sep>15,000</span>+</div>
+      <div class="ring-row">
+        <svg class="ring" viewBox="0 0 44 44" aria-hidden="true">
+          <circle cx="22" cy="22" r="18" class="ring-bg"/>
+          <circle cx="22" cy="22" r="18" class="ring-fg" id="ring" pathLength="100"/>
+        </svg>
+        <p><strong>95%</strong> delivery success<br><strong>−85%</strong> error rate</p>
       </div>
-      <div class="exp-list">
+    </section>
 
-        <div class="glass-card exp-card reveal">
-          <div class="exp-top">
-            <div>
-              <div class="exp-co">PT Code Development Indonesia</div>
-              <div class="exp-role-wrap">
-                <span class="exp-role-badge">Backend Engineer</span>
-              </div>
-            </div>
-            <span class="exp-period-badge">Jan 2023 – Present</span>
-          </div>
-          <div class="exp-tag-row">
-            <span class="exp-tag">Node.js</span>
-            <span class="exp-tag">TypeScript</span>
-            <span class="exp-tag">Golang</span>
-            <span class="exp-tag">PostgreSQL</span>
-            <span class="exp-tag">Redis</span>
-            <span class="exp-tag">Firebase</span>
-            <span class="exp-tag">AWS S3</span>
-            <span class="exp-tag">PGP/AES-256</span>
-          </div>
-          <ul class="exp-bullets">
-            <li>Designed and shipped the <em>Go-Semolis wallet service</em> from zero to production — full payment gateway integration, complete transaction lifecycle management.</li>
-            <li>Diagnosed query bottlenecks on the Nuun project and cut latency <strong>60%</strong> through targeted indexing and query rewrites — zero downtime.</li>
-            <li>Eliminated a padding oracle vulnerability in <em>MyTelkomsel</em> by migrating AES-256 CBC → GCM encryption before it became a breach.</li>
-            <li>Achieved <strong>12× API throughput</strong> by rearchitecting O(n²) offer filtering to O(n log n) — measured improvement, shipped to production.</li>
-            <li>Built multi-channel notification infrastructure (email/SMTP, push via Firebase, in-app) now used across multiple products.</li>
-            <li>Shipped real-time Hajj/Umrah pilgrim tracking service in Golang — PostgreSQL + Redis pub/sub for low-latency location updates.</li>
-          </ul>
+    <!-- EXPERIENCE -->
+    <section class="tile t-exp c3 r2" id="experience">
+      <div class="tile-label">Work experience</div>
+      <h2 class="tile-title">5 years. 3 companies. <em>Systems that still run in production.</em></h2>
+
+      <div class="timeline" aria-hidden="true">
+        <div class="tl-track">
+          <i class="tl-seg" data-job="2" style="--s:0.025; --e:0.444"></i>
+          <i class="tl-seg" data-job="0" style="--s:0.444; --e:1"></i>
+          <i class="tl-seg tl-alt" data-job="1" style="--s:0.531; --e:0.679"></i>
         </div>
+        <div class="tl-years"><span style="--p:0">2020</span><span style="--p:0.148">2021</span><span style="--p:0.296">2022</span><span style="--p:0.444">2023</span><span style="--p:0.593">2024</span><span style="--p:0.741">2025</span><span style="--p:0.889">2026</span></div>
+      </div>
 
-        <div class="glass-card exp-card reveal reveal-d1">
-          <div class="exp-top">
-            <div>
-              <div class="exp-co">PT Stafbook Teknologi Asia</div>
-              <div class="exp-role-wrap">
-                <span class="exp-role-badge">Backend Engineer · Contract</span>
-              </div>
-            </div>
-            <span class="exp-period-badge">Aug 2023 – Aug 2024</span>
-          </div>
-          <div class="exp-tag-row">
-            <span class="exp-tag">Laravel</span>
-            <span class="exp-tag">MySQL</span>
-            <span class="exp-tag">Redis</span>
-            <span class="exp-tag">WebSocket</span>
-            <span class="exp-tag">Queue</span>
-          </div>
-          <ul class="exp-bullets">
-            <li>Scaled employee import capacity from 200 to <strong>3,000+ records per job</strong> — identified N+1 bottleneck, moved to async processing with Laravel Queue, <strong>70% throughput gain</strong>.</li>
-            <li>Made payroll calculations <strong>10× faster</strong> on large datasets by eliminating cascading N+1 queries throughout the module.</li>
-            <li>Cut scheduling-related support tickets by <strong>80%</strong> by redesigning the scheduling logic from scratch instead of patching it.</li>
-            <li>Added real-time WebSocket notifications for long-running import jobs — users no longer had to guess when their data was ready.</li>
-          </ul>
+      <div class="exp-body">
+        <div class="exp-tabs" role="tablist">
+          <button class="exp-tab" role="tab" data-job="0" type="button"><b>PT Code Development Indonesia</b><span>Jan 2023 – Present</span></button>
+          <button class="exp-tab" role="tab" data-job="1" type="button"><b>PT Stafbook Teknologi Asia</b><span>Aug 2023 – Aug 2024</span></button>
+          <button class="exp-tab" role="tab" data-job="2" type="button"><b>PT Solu Filantropi Teknologi</b><span>Mar 2020 – Jan 2023</span></button>
         </div>
 
-        <div class="glass-card exp-card reveal reveal-d2">
-          <div class="exp-top">
-            <div>
-              <div class="exp-co">PT Solu Filantropi Teknologi</div>
-              <div class="exp-role-wrap">
-                <span class="exp-role-badge">Backend Engineer</span>
-              </div>
-            </div>
-            <span class="exp-period-badge">Mar 2020 – Jan 2023</span>
-          </div>
-          <div class="exp-tag-row">
-            <span class="exp-tag">Golang</span>
-            <span class="exp-tag">Laravel</span>
-            <span class="exp-tag">Lumen</span>
-            <span class="exp-tag">PostgreSQL</span>
-            <span class="exp-tag">Docker</span>
-            <span class="exp-tag">Microservices</span>
-          </div>
-          <ul class="exp-bullets">
-            <li>Delivered a warehouse &amp; logistics platform for <em>PT HM Sampoerna</em> handling <strong>15,000+ daily transactions</strong> — brought error rate down by <strong>85%</strong> and delivery success to 95%.</li>
-            <li>Cut manual processing by <strong>60%</strong> for <em>Indonesia's Ministry of Education</em> by automating fund disbursement tracking across 5,000 transactions.</li>
-            <li>Increased order volume by <strong>30%</strong> for <em>PT Pertamina</em> by building a WhatsApp ordering bot (Twilio + Dialogflow) — no app install required for end users.</li>
-            <li>Improved operational efficiency by <strong>80%</strong> for the <em>State Civil Service Commission's</em> complaint portal — Lumen backend, AngularJS frontend, Keycloak SSO.</li>
-          </ul>
-        </div>
-
-      </div>
-    </div>
-  </section>
-
-  <!-- SKILLS -->
-  <section id="skills">
-    <div class="container">
-      <div class="sec-hd">
-        <div class="sec-eyebrow">Technical Skills</div>
-        <h2 class="sec-title">5 years of daily production use — not just tutorials.</h2>
-      </div>
-      <div class="glass-card skills-card reveal">
-        <div class="skills-inner">
-          <div class="skill-group">
-            <div class="sg-label">Expert</div>
-            <div class="sg-pills">
-              <span class="sg-pill hi">Node.js</span>
-              <span class="sg-pill hi">TypeScript</span>
-              <span class="sg-pill hi">Golang</span>
-              <span class="sg-pill hi">Laravel / PHP</span>
-              <span class="sg-pill hi">REST API</span>
-              <span class="sg-pill hi">Microservices</span>
-              <span class="sg-pill hi">PostgreSQL</span>
-              <span class="sg-pill hi">MySQL</span>
-              <span class="sg-pill hi">Redis</span>
-              <span class="sg-pill hi">Git</span>
-            </div>
-          </div>
-          <div class="skill-group">
-            <div class="sg-label">Advanced</div>
-            <div class="sg-pills">
-              <span class="sg-pill">Docker</span>
-              <span class="sg-pill">AWS S3</span>
-              <span class="sg-pill">Kafka</span>
-              <span class="sg-pill">WebSocket</span>
-              <span class="sg-pill">Event-driven architecture</span>
-            </div>
-          </div>
-          <div class="skill-group">
-            <div class="sg-label">Intermediate</div>
-            <div class="sg-pills">
-              <span class="sg-pill">CI/CD</span>
-            </div>
-          </div>
-          <div class="skill-group">
-            <div class="sg-label">Daily Tooling</div>
-            <div class="sg-pills">
-              <span class="sg-pill">Claude Code</span>
-              <span class="sg-pill">GPT Codex</span>
-              <span class="sg-pill">AI-assisted development</span>
-            </div>
-          </div>
+        <div class="exp-panels">
+          <article class="exp-panel" data-job="0" role="tabpanel">
+            <div class="ep-head"><h3>PT Code Development Indonesia</h3><span class="chip">Backend Engineer</span></div>
+            <div class="tags"><span>Node.js</span><span>TypeScript</span><span>Golang</span><span>PostgreSQL</span><span>Redis</span><span>Firebase</span><span>AWS S3</span><span>PGP/AES-256</span></div>
+            <ul>
+              <li>Designed and shipped the <em>Go-Semolis wallet service</em> from zero to production — full payment gateway integration, complete transaction lifecycle management.</li>
+              <li>Diagnosed query bottlenecks on the Nuun project and cut latency <strong>60%</strong> through targeted indexing and query rewrites — zero downtime.</li>
+              <li>Eliminated a padding oracle vulnerability in <em>MyTelkomsel</em> by migrating AES-256 CBC → GCM encryption before it became a breach.</li>
+              <li>Achieved <strong>12× API throughput</strong> by rearchitecting O(n²) offer filtering to O(n log n) — measured improvement, shipped to production.</li>
+              <li>Built multi-channel notification infrastructure (email/SMTP, push via Firebase, in-app) now used across multiple products.</li>
+              <li>Shipped real-time Hajj/Umrah pilgrim tracking service in Golang — PostgreSQL + Redis pub/sub for low-latency location updates.</li>
+            </ul>
+          </article>
+          <article class="exp-panel" data-job="1" role="tabpanel">
+            <div class="ep-head"><h3>PT Stafbook Teknologi Asia</h3><span class="chip">Backend Engineer · Contract</span></div>
+            <div class="tags"><span>Laravel</span><span>MySQL</span><span>Redis</span><span>WebSocket</span><span>Queue</span></div>
+            <ul>
+              <li>Scaled employee import capacity from 200 to <strong>3,000+ records per job</strong> — identified N+1 bottleneck, moved to async processing with Laravel Queue, <strong>70% throughput gain</strong>.</li>
+              <li>Made payroll calculations <strong>10× faster</strong> on large datasets by eliminating cascading N+1 queries throughout the module.</li>
+              <li>Cut scheduling-related support tickets by <strong>80%</strong> by redesigning the scheduling logic from scratch instead of patching it.</li>
+              <li>Added real-time WebSocket notifications for long-running import jobs — users no longer had to guess when their data was ready.</li>
+            </ul>
+          </article>
+          <article class="exp-panel" data-job="2" role="tabpanel">
+            <div class="ep-head"><h3>PT Solu Filantropi Teknologi</h3><span class="chip">Backend Engineer</span></div>
+            <div class="tags"><span>Golang</span><span>Laravel</span><span>Lumen</span><span>PostgreSQL</span><span>Docker</span><span>Microservices</span></div>
+            <ul>
+              <li>Delivered a warehouse &amp; logistics platform for <em>PT HM Sampoerna</em> handling <strong>15,000+ daily transactions</strong> — brought error rate down by <strong>85%</strong> and delivery success to 95%.</li>
+              <li>Cut manual processing by <strong>60%</strong> for <em>Indonesia's Ministry of Education</em> by automating fund disbursement tracking across 5,000 transactions.</li>
+              <li>Increased order volume by <strong>30%</strong> for <em>PT Pertamina</em> by building a WhatsApp ordering bot (Twilio + Dialogflow) — no app install required for end users.</li>
+              <li>Improved operational efficiency by <strong>80%</strong> for the <em>State Civil Service Commission's</em> complaint portal — Lumen backend, AngularJS frontend, Keycloak SSO.</li>
+            </ul>
+          </article>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- EDUCATION -->
-  <section id="education">
-    <div class="container">
-      <div class="sec-hd">
-        <div class="sec-eyebrow">Education</div>
-        <h2 class="sec-title">Started competing early. Still do.</h2>
-      </div>
-      <div class="edu-grid">
-        <div class="glass-card edu-card reveal">
-          <div class="edu-period">2021 – 2025</div>
-          <div class="edu-deg">B.Sc. Information Systems</div>
-          <div class="edu-school">Binus University, Jakarta</div>
-        </div>
-        <div class="glass-card edu-card reveal reveal-d1">
-          <div class="edu-period">2017 – 2021</div>
-          <div class="edu-deg">Computer Science Vocational</div>
-          <div class="edu-school">SMK Negeri 26 Jakarta</div>
-          <div class="edu-award">
-            3rd Place · Web Design LKS SMK<br>
-            3rd Place · Smartschool SEACC Batch 3 (Southeast Asia)
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <!-- AI TOOLING -->
+    <section class="tile t-ai r2">
+      <div class="tile-label light">Daily workflow</div>
+      <h2 class="tile-title light">AI-assisted, <em>not AI-dependent.</em></h2>
+      <div class="ai-term" aria-hidden="true"><pre id="aiTerm"></pre></div>
+      <div class="ai-tools"><span>Claude Code</span><span>GPT Codex</span></div>
+    </section>
 
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="container">
-      <div class="sec-hd">
-        <div class="sec-eyebrow">Get in Touch</div>
-        <h2 class="sec-title">Hiring a backend engineer? I'm available worldwide.</h2>
+    <!-- ABOUT -->
+    <section class="tile t-about c2 r2" id="about">
+      <div class="tile-label">About me</div>
+      <h2 class="tile-title">I ship fast backends. <em>Then I make them faster.</em></h2>
+      <div class="about-text">
+        <p>
+          I've spent five years shipping <strong>backend systems in production</strong> —
+          ride-hailing, fintech, and government infrastructure. My primary stack is
+          Node.js and TypeScript; I've been writing Golang for microservices for the past two years.
+        </p>
+        <p>
+          Performance is where I go deep. I cut API response time <strong>12×</strong>
+          in a single refactor by rearchitecting O(n²) logic to O(n log n). I reduced
+          database query latency by <strong>60%</strong> through index analysis and query
+          rewrites. Every optimization I ship comes with measured before/after data.
+        </p>
+        <p>
+          I use <em>AI-assisted tooling</em> (Claude Code, GPT Codex) as a core part of
+          my daily workflow — not occasionally, but as a productivity layer that lets me
+          move faster without cutting corners. I'm looking for
+          <strong>backend or software engineering roles worldwide</strong> —
+          remote or on-site. Open to visa sponsorship where needed.
+        </p>
       </div>
-      <div class="contact-wrap">
-        <div class="glass-card contact-card reveal">
-          <p class="contact-desc">
-            I'm actively looking for backend or software engineering roles worldwide —
-            remote or on-site. Available for full-time positions.
-            Open to visa sponsorship where needed — I'll handle the paperwork, you focus on the role.
-          </p>
-          <a href="mailto:alfalahlazuardim@gmail.com" class="contact-email">
-            alfalahlazuardim@gmail.com
-          </a>
-          <div class="contact-meta">
-            <span class="meta-chip">📍 East Jakarta, Indonesia</span>
-            <span class="meta-chip">📞 +62 851 7300 9061</span>
-            <span class="meta-chip">💻 Remote-friendly</span>
-            <span class="meta-chip">🌏 Open to relocate worldwide</span>
-            <span class="meta-chip">📋 Visa sponsorship welcome</span>
-          </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section class="tile t-skills c2 r2" id="skills">
+      <div class="tile-label">Technical skills</div>
+      <h2 class="tile-title">5 years of daily production use — <em>not just tutorials.</em></h2>
+      <div class="filters" role="group" aria-label="Filter skills">
+        <button type="button" class="filter is-on" data-f="all">All</button>
+        <button type="button" class="filter" data-f="expert">Expert</button>
+        <button type="button" class="filter" data-f="adv">Advanced</button>
+        <button type="button" class="filter" data-f="mid">Intermediate</button>
+        <button type="button" class="filter" data-f="tool">Daily tooling</button>
+      </div>
+      <div class="skill-cloud" id="skillCloud">
+        <span class="sk" data-l="expert">Node.js</span>
+        <span class="sk" data-l="expert">TypeScript</span>
+        <span class="sk" data-l="expert">Golang</span>
+        <span class="sk" data-l="expert">Laravel / PHP</span>
+        <span class="sk" data-l="expert">REST API</span>
+        <span class="sk" data-l="expert">Microservices</span>
+        <span class="sk" data-l="expert">PostgreSQL</span>
+        <span class="sk" data-l="expert">MySQL</span>
+        <span class="sk" data-l="expert">Redis</span>
+        <span class="sk" data-l="expert">Git</span>
+        <span class="sk" data-l="adv">Docker</span>
+        <span class="sk" data-l="adv">AWS S3</span>
+        <span class="sk" data-l="adv">Kafka</span>
+        <span class="sk" data-l="adv">WebSocket</span>
+        <span class="sk" data-l="adv">Event-driven architecture</span>
+        <span class="sk" data-l="mid">CI/CD</span>
+        <span class="sk" data-l="tool">Claude Code</span>
+        <span class="sk" data-l="tool">GPT Codex</span>
+        <span class="sk" data-l="tool">AI-assisted development</span>
+      </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="tile t-edu c2" id="education">
+      <div class="tile-label">Education</div>
+      <div class="edu-list">
+        <div class="edu">
+          <span class="edu-when">2021 – 2025</span>
+          <div><b>B.Sc. Information Systems</b><span>Binus University, Jakarta</span></div>
+        </div>
+        <div class="edu">
+          <span class="edu-when">2017 – 2021</span>
+          <div><b>Computer Science Vocational</b><span>SMK Negeri 26 Jakarta</span></div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <footer>
-    <span>Al Falah Lazuardi Mahmudi · Backend Engineer · 2025</span>
+    <!-- CONTACT -->
+    <section class="tile t-contact c2 r2" id="contact">
+      <div class="tile-label light">Get in touch</div>
+      <h2 class="contact-title">Hiring a backend engineer? <em>I'm available worldwide.</em></h2>
+      <p class="contact-desc">
+        I'm actively looking for backend or software engineering roles worldwide —
+        remote or on-site. Available for full-time positions.
+        Open to visa sponsorship where needed — I'll handle the paperwork, you focus on the role.
+      </p>
+      <div class="mail-row">
+        <a href="mailto:alfalahlazuardim@gmail.com" class="mail">alfalahlazuardim@gmail.com</a>
+        <button type="button" class="copy" id="copyBtn" aria-label="Copy email address">
+          <span class="copy-a">Copy</span><span class="copy-b">Copied ✓</span>
+        </button>
+      </div>
+      <div class="contact-meta">
+        <span>📍 East Jakarta, Indonesia</span>
+        <a href="tel:+6285173009061">📞 +62 851 7300 9061</a>
+        <span>💻 Remote-friendly</span>
+        <span>🌏 Open to relocate worldwide</span>
+        <span>📋 Visa sponsorship welcome</span>
+      </div>
+    </section>
+
+    <!-- AWARDS -->
+    <section class="tile t-awards c2">
+      <div class="tile-label">Started competing early. Still do.</div>
+      <div class="awards">
+        <div class="award"><span class="trophy">🏆</span><div><b>3rd Place</b><span>Web Design LKS SMK</span></div></div>
+        <div class="award"><span class="trophy">🏆</span><div><b>3rd Place</b><span>Smartschool SEACC Batch 3 (Southeast Asia)</span></div></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <span>Al Falah Lazuardi Mahmudi · Backend Engineer · <span id="year">2026</span></span>
+    <span class="foot-hint">Press <kbd>⌘K</kbd> to jump anywhere</span>
   </footer>
 
-  <script>
-    // Sticky nav
-    const nav = document.getElementById('nav');
-    window.addEventListener('scroll', () => {
-      nav.classList.toggle('scrolled', window.scrollY > 40);
-    }, { passive: true });
+  <!-- COMMAND PALETTE -->
+  <dialog class="palette" id="palette" aria-label="Command palette">
+    <div class="pal-box">
+      <input id="palInput" type="text" placeholder="Type a command or search…" autocomplete="off" spellcheck="false" aria-label="Search commands">
+      <ul class="pal-list" id="palList" role="listbox"></ul>
+      <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> select</span><span><kbd>esc</kbd> close</span></div>
+    </div>
+  </dialog>
 
-    // Scroll reveal
-    const revEls = document.querySelectorAll('.reveal');
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('show');
-          obs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-    revEls.forEach(el => obs.observe(el));
-  </script>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/motion@11.11.13/dist/motion.js"></script>
+  <script src="assets/js/bento.js"></script>
+  <script type="module" src="assets/js/globe.js"></script>
 </body>
 </html>
