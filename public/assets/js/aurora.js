@@ -48,9 +48,14 @@
   /* ───────────── menu ───────────── */
 
   const menuBtn = $('#menuBtn');
+  const menuBg = ['main', '.footer', '.brand'].map((s) => $(s));
   function setMenu(open) {
+    if (open === root.classList.contains('menu-open')) return;
     root.classList.toggle('menu-open', open);
     menuBtn.setAttribute('aria-expanded', open);
+    menuBg.forEach((el) => { el.inert = open; });
+    if (open) setTimeout(() => $('.menu-links a').focus({ preventScroll: true }), 300);
+    else if ($('#menu').contains(document.activeElement)) menuBtn.focus({ preventScroll: true });
     if (lenis) open ? lenis.stop() : lenis.start();
     if (open && HAS_GSAP && !RM) {
       gsap.fromTo('.menu-links a', { yPercent: 110 }, { yPercent: 0, duration: 1, ease: 'expo.out', stagger: 0.06, delay: 0.2 });
@@ -68,21 +73,193 @@
       e.preventDefault();
       const wasOpen = root.classList.contains('menu-open');
       setMenu(false);
-      setTimeout(() => scrollToTarget(target), wasOpen ? 350 : 0);
+      setTimeout(() => {
+        scrollToTarget(target);
+        // move keyboard focus along with the scroll (skip link, section links)
+        const focusEl = target === 0 ? $('.brand') : target;
+        if (target !== 0 && !target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+        focusEl.focus({ preventScroll: true });
+      }, wasOpen ? 350 : 0);
     });
   });
 
-  if (!HAS_GSAP) {
-    const l = $('#loader');
-    if (l) l.remove();
-    return;
+  /* ───────────── hero shader (raw WebGL, no library) ───────────── */
+
+  const FRAG = `
+    precision mediump float;
+    uniform float uTime; uniform vec2 uRes; uniform vec2 uMouse; uniform float uScroll;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){
+      vec2 i = floor(p), f = fract(p);
+      vec2 u = f * f * (3.0 - 2.0 * f);
+      return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
+    }
+    float fbm(vec2 p){
+      float v = 0.0, a = 0.5;
+      mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
+      for (int i = 0; i < OCTAVES; i++){ v += a * noise(p); p = m * p; a *= 0.5; }
+      return v;
+    }
+    void main(){
+      vec2 uv = gl_FragCoord.xy / uRes;
+      float asp = uRes.x / uRes.y;
+      vec2 p = vec2(uv.x * asp, uv.y);
+      vec2 m = vec2(uMouse.x * asp, uMouse.y);
+      float d = distance(p, m);
+      p += (p - m) * 0.22 * exp(-d * 3.5);
+      float t = uTime * 0.05;
+      vec2 q = vec2(fbm(p * 1.4 + t), fbm(p * 1.4 + vec2(5.2, 1.3) - t));
+      vec2 r = vec2(fbm(p * 1.4 + 3.5 * q + vec2(1.7, 9.2) + t * 1.4), fbm(p * 1.4 + 3.5 * q + vec2(8.3, 2.8) - t));
+      float f = fbm(p * 1.4 + 3.2 * r);
+      vec3 ink = vec3(0.027, 0.027, 0.043);
+      vec3 deep = vec3(0.10, 0.06, 0.32);
+      vec3 violet = vec3(0.50, 0.42, 1.0);
+      vec3 coral = vec3(1.0, 0.45, 0.33);
+      vec3 col = mix(ink, deep, smoothstep(0.2, 0.8, f));
+      col = mix(col, violet, smoothstep(0.45, 1.05, length(q)) * 0.85);
+      col = mix(col, coral, smoothstep(0.55, 0.95, r.x) * 0.75);
+      col += violet * 0.25 * exp(-d * 5.0);
+      float vig = smoothstep(1.25, 0.25, length((uv - vec2(0.55, 0.6)) * vec2(1.0, 1.25)));
+      col *= mix(0.25, 1.0, vig);
+      col = mix(ink, col, 1.0 - uScroll * 0.85);
+      col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * 0.035;
+      gl_FragColor = vec4(col, 1.0);
+    }`;
+
+  function initShader() {
+    const canvas = $('#gl');
+    const hero = $('#hero');
+    // failIfMajorPerformanceCaveat: skip software-rendered WebGL (slow devices, headless audits)
+    // and keep the CSS gradient instead.
+    const gl = canvas && canvas.getContext('webgl', {
+      antialias: false, alpha: false, depth: false, stencil: false,
+      preserveDrawingBuffer: false, powerPreference: 'low-power', failIfMajorPerformanceCaveat: true,
+    });
+    if (!gl) return null;
+    // Software rasterizers (SwiftShader, llvmpipe…) render this shader on the CPU — bail out.
+    const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    const renderer = dbg ? String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)) : '';
+    if (/swiftshader|llvmpipe|softpipe|software|basic render/i.test(renderer)) return null;
+
+    const compile = (type, src) => {
+      const sh = gl.createShader(type);
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : null;
+    };
+    const vs = compile(gl.VERTEX_SHADER, 'attribute vec2 a; void main(){ gl_Position = vec4(a, 0.0, 1.0); }');
+    const fs = compile(gl.FRAGMENT_SHADER, `#define OCTAVES ${FINE ? 5 : 4}
+` + FRAG);
+    if (!vs || !fs) return null;
+    const prog = gl.createProgram();
+    gl.attachShader(prog, vs);
+    gl.attachShader(prog, fs);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
+    gl.useProgram(prog);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const aLoc = gl.getAttribLocation(prog, 'a');
+    gl.enableVertexAttribArray(aLoc);
+    gl.vertexAttribPointer(aLoc, 2, gl.FLOAT, false, 0, 0);
+
+    const u = (n) => gl.getUniformLocation(prog, n);
+    const uTime = u('uTime');
+    const uRes = u('uRes');
+    const uMouse = u('uMouse');
+    const uScroll = u('uScroll');
+
+    // Render at reduced resolution — the look is soft anyway, and it keeps the GPU cool.
+    const scale = Math.min(window.devicePixelRatio || 1, 2) * (FINE ? 0.5 : 0.35);
+    function resize() {
+      const w = Math.max(1, Math.round(hero.clientWidth * scale));
+      const h = Math.max(1, Math.round(hero.clientHeight * scale));
+      if (canvas.width === w && canvas.height === h) return;
+      canvas.width = w;
+      canvas.height = h;
+      gl.viewport(0, 0, w, h);
+      gl.uniform2f(uRes, w, h);
+      if (!running) draw(performance.now());
+    }
+
+    const mouse = { x: 0.6, y: 0.55 };
+    const target = { x: 0.6, y: 0.55 };
+    let scroll = 0;
+    let running = false;
+    let raf = 0;
+    let visible = true;
+    let frozen = false;
+    const t0 = performance.now();
+
+    function draw(now) {
+      mouse.x += (target.x - mouse.x) * 0.05;
+      mouse.y += (target.y - mouse.y) * 0.05;
+      gl.uniform1f(uTime, RM ? 24 : (now - t0) / 1000 + 20);
+      gl.uniform2f(uMouse, mouse.x, mouse.y);
+      gl.uniform1f(uScroll, scroll);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    // Touch devices draw at ~30fps. If frames still come in slow, freeze on a still frame.
+    const minGap = FINE ? 0 : 30;
+    let lastDraw = 0;
+    let slow = 0;
+    function frame(now) {
+      raf = requestAnimationFrame(frame);
+      if (now - lastDraw < minGap) return;
+      if (lastDraw && now - lastDraw > 70 && ++slow > 20) { running = false; frozen = true; cancelAnimationFrame(raf); return; }
+      lastDraw = now;
+      draw(now);
+    }
+    function update() {
+      const shouldRun = !RM && !frozen && visible && !document.hidden;
+      if (shouldRun && !running) lastDraw = 0;
+      if (shouldRun === running) return;
+      running = shouldRun;
+      if (running) raf = requestAnimationFrame(frame);
+      else cancelAnimationFrame(raf);
+    }
+
+    resize();
+    draw(performance.now());
+    window.addEventListener('resize', resize, { passive: true });
+    if (FINE) {
+      window.addEventListener('pointermove', (e) => {
+        if (!visible) return;
+        const r = hero.getBoundingClientRect();
+        target.x = (e.clientX - r.left) / r.width;
+        target.y = 1 - (e.clientY - r.top) / r.height;
+      }, { passive: true });
+    }
+    new IntersectionObserver(([en]) => { visible = en.isIntersecting; update(); }).observe(hero);
+    document.addEventListener('visibilitychange', update);
+    canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); running = false; cancelAnimationFrame(raf); canvas.classList.remove('is-on'); });
+    requestAnimationFrame(() => canvas.classList.add('is-on'));
+    update();
+
+    return {
+      setScroll(v) { scroll = v; if (!running) draw(performance.now()); },
+    };
   }
+
+  // Start the shader once the page has loaded and the main thread is idle,
+  // so it never competes with first paint.
+  let shader = null;
+  const whenIdle = (fn) => ('requestIdleCallback' in window ? requestIdleCallback(fn, { timeout: 1500 }) : setTimeout(fn, 200));
+  const startShader = () => whenIdle(() => {
+    shader = initShader();
+    if (shader && HAS_GSAP) {
+      ScrollTrigger.create({ trigger: '#hero', start: 'top top', end: 'bottom top', onUpdate: (st) => shader.setScroll(st.progress) });
+    }
+  });
+  if (document.readyState === 'complete') startShader();
+  else window.addEventListener('load', startShader, { once: true });
+
+  if (!HAS_GSAP) return;
 
   /* ───────────── GSAP-powered experience ───────────── */
 
   gsap.registerPlugin(ScrollTrigger);
-  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-  window.scrollTo(0, 0);
 
   if (!RM && window.Lenis) {
     lenis = new Lenis({ lerp: 0.085 });
@@ -105,14 +282,12 @@
   };
 
   /* cursor + spotlight + magnetic */
-  const spot = $('#spotlight');
-  window.addEventListener('pointermove', (e) => {
-    spot.style.setProperty('--x', e.clientX + 'px');
-    spot.style.setProperty('--y', e.clientY + 'px');
-  }, { passive: true });
-
   if (FINE) {
     root.classList.add('has-cursor');
+    const spot = $('#spotlight');
+    const sx = gsap.quickSetter(spot, 'x', 'px');
+    const sy = gsap.quickSetter(spot, 'y', 'px');
+    window.addEventListener('pointermove', (e) => { sx(e.clientX); sy(e.clientY); }, { passive: true });
     const cur = $('#cursor');
     const cx = gsap.quickTo(cur, 'x', { duration: 0.35, ease: 'power3' });
     const cy = gsap.quickTo(cur, 'y', { duration: 0.35, ease: 'power3' });
@@ -139,143 +314,6 @@
       });
     }
   }
-
-  /* hero shader */
-  const shader = (function initShader() {
-    const canvas = $('#gl');
-    if (!window.THREE || !canvas) return null;
-    let renderer;
-    try { renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false }); } catch (e) { return null; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2) * 0.5);
-    const scene = new THREE.Scene();
-    const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    const uniforms = {
-      uTime: { value: 0 },
-      uRes: { value: new THREE.Vector2(1, 1) },
-      uMouse: { value: new THREE.Vector2(0.6, 0.55) },
-      uScroll: { value: 0 },
-      uIntro: { value: RM ? 1 : 0 },
-    };
-    const material = new THREE.ShaderMaterial({
-      uniforms,
-      vertexShader: 'void main(){ gl_Position = vec4(position, 1.0); }',
-      fragmentShader: `
-        precision highp float;
-        uniform float uTime; uniform vec2 uRes; uniform vec2 uMouse; uniform float uScroll; uniform float uIntro;
-        float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-        float noise(vec2 p){
-          vec2 i = floor(p), f = fract(p);
-          vec2 u = f * f * (3.0 - 2.0 * f);
-          return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), u.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
-        }
-        float fbm(vec2 p){
-          float v = 0.0, a = 0.5;
-          mat2 m = mat2(1.6, 1.2, -1.2, 1.6);
-          for (int i = 0; i < 5; i++){ v += a * noise(p); p = m * p; a *= 0.5; }
-          return v;
-        }
-        void main(){
-          vec2 uv = gl_FragCoord.xy / uRes;
-          float asp = uRes.x / uRes.y;
-          vec2 p = vec2(uv.x * asp, uv.y);
-          vec2 m = vec2(uMouse.x * asp, uMouse.y);
-          float d = distance(p, m);
-          p += (p - m) * 0.22 * exp(-d * 3.5);           // cursor lens
-          float t = uTime * 0.05;
-          vec2 q = vec2(fbm(p * 1.4 + t), fbm(p * 1.4 + vec2(5.2, 1.3) - t));
-          vec2 r = vec2(fbm(p * 1.4 + 3.5 * q + vec2(1.7, 9.2) + t * 1.4), fbm(p * 1.4 + 3.5 * q + vec2(8.3, 2.8) - t));
-          float f = fbm(p * 1.4 + 3.2 * r);
-          vec3 ink = vec3(0.027, 0.027, 0.043);
-          vec3 deep = vec3(0.10, 0.06, 0.32);
-          vec3 violet = vec3(0.50, 0.42, 1.0);
-          vec3 coral = vec3(1.0, 0.45, 0.33);
-          vec3 col = mix(ink, deep, smoothstep(0.2, 0.8, f));
-          col = mix(col, violet, smoothstep(0.45, 1.05, length(q)) * 0.85);
-          col = mix(col, coral, smoothstep(0.55, 0.95, r.x) * 0.75);
-          col += violet * 0.25 * exp(-d * 5.0);          // glow under cursor
-          float vig = smoothstep(1.25, 0.25, length((uv - vec2(0.55, 0.6)) * vec2(1.0, 1.25)));
-          col *= mix(0.25, 1.0, vig);
-          col = mix(ink, col, uIntro * (1.0 - uScroll * 0.85));
-          col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * 0.035;
-          gl_FragColor = vec4(col, 1.0);
-        }`,
-    });
-    scene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material));
-
-    const hero = $('#hero');
-    function resize() {
-      const w = hero.clientWidth;
-      const h = hero.clientHeight;
-      renderer.setSize(w, h, false);
-      const pr = renderer.getPixelRatio();
-      uniforms.uRes.value.set(w * pr, h * pr);
-    }
-    resize();
-    window.addEventListener('resize', resize);
-
-    const target = { x: 0.6, y: 0.55 };
-    window.addEventListener('pointermove', (e) => {
-      const r = hero.getBoundingClientRect();
-      target.x = (e.clientX - r.left) / r.width;
-      target.y = 1 - (e.clientY - r.top) / r.height;
-    }, { passive: true });
-
-    let visible = true;
-    new IntersectionObserver(([en]) => { visible = en.isIntersecting; }).observe(hero);
-    const clock3 = new THREE.Clock();
-    function frame() {
-      requestAnimationFrame(frame);
-      if (!visible) return;
-      uniforms.uTime.value = clock3.getElapsedTime() + 20;
-      const mu = uniforms.uMouse.value;
-      mu.x += (target.x - mu.x) * 0.05;
-      mu.y += (target.y - mu.y) * 0.05;
-      renderer.render(scene, camera);
-    }
-    if (RM) { uniforms.uTime.value = 24; renderer.render(scene, camera); } else frame();
-
-    ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom top', onUpdate: (s) => { uniforms.uScroll.value = s.progress; } });
-    return uniforms;
-  })();
-
-  /* loader → hero intro */
-  function heroIntro() {
-    if (RM) return;
-    const tl = gsap.timeline();
-    if (shader) tl.to(shader.uIntro, { value: 1, duration: 2.2, ease: 'power2.out' }, 0);
-    tl.from('.ht-line > span', { yPercent: 115, rotate: 3, duration: 1.4, ease: 'expo.out', stagger: 0.09 }, 0.1)
-      .from('.hero-eyebrow span', { y: 20, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.08 }, 0.3)
-      .from(['.hero-lede', '.scroll-cue'], { y: 30, opacity: 0, duration: 1, ease: 'power3.out', stagger: 0.1 }, 0.55)
-      .from('.bar', { y: -30, opacity: 0, duration: 1, ease: 'power3.out' }, 0.4);
-  }
-
-  (function loader() {
-    const el = $('#loader');
-    if (RM) { el.remove(); if (shader) shader.uIntro.value = 1; return; }
-    let quick = false;
-    try { quick = sessionStorage.getItem('aurora-seen') === '1'; sessionStorage.setItem('aurora-seen', '1'); } catch (e) { /* ignore */ }
-    if (lenis) lenis.stop();
-    const pct = $('#ldPct');
-    const o = { v: 0 };
-    gsap.timeline()
-      .from('.ld-name span', { yPercent: 110, duration: 1, ease: 'expo.out' })
-      .from('.ld-meta', { opacity: 0, duration: 0.6 }, 0.2)
-      .to(o, {
-        v: 100,
-        duration: quick ? 0.6 : 1.6,
-        ease: 'power2.inOut',
-        onUpdate: () => {
-          pct.textContent = Math.round(o.v) + '%';
-          $('#ldLine').style.width = o.v + '%';
-        },
-      }, 0.2)
-      .to('.ld-name span', { yPercent: -110, duration: 0.7, ease: 'expo.in' }, '+=0.1')
-      .to(['.ld-meta', '.ld-line'], { opacity: 0, duration: 0.4 }, '<')
-      .to('.ld-top', { yPercent: -100, duration: 1.1, ease: 'expo.inOut' }, '-=0.1')
-      .to('.ld-bot', { yPercent: 100, duration: 1.1, ease: 'expo.inOut' }, '<')
-      .add(() => { if (lenis) lenis.start(); heroIntro(); }, '-=0.75')
-      .add(() => el.remove());
-  })();
 
   if (!RM) {
     /* hero parallax on scroll */
@@ -307,7 +345,7 @@
         break;
       }
     }
-    gsap.fromTo(words, { opacity: 0.12 }, {
+    gsap.fromTo(words, { opacity: 0.4 }, { // 0.4 keeps unlit words above 3:1 contrast
       opacity: 1, stagger: 0.1, ease: 'none',
       scrollTrigger: { trigger: lead, start: 'top 80%', end: 'bottom 50%', scrub: true },
     });
@@ -346,16 +384,20 @@
   (function impact() {
     const cards = $$('.icard');
     cards.forEach((card, i) => {
-      card.addEventListener('pointermove', (e) => {
-        const r = card.getBoundingClientRect();
-        card.style.setProperty('--mx', e.clientX - r.left + 'px');
-        card.style.setProperty('--my', e.clientY - r.top + 'px');
-      });
+      if (FINE) {
+        let r = null;
+        card.addEventListener('pointerenter', () => { r = card.getBoundingClientRect(); });
+        card.addEventListener('pointermove', (e) => {
+          if (!r) return;
+          card.style.setProperty('--mx', e.clientX - r.left + 'px');
+          card.style.setProperty('--my', e.clientY - r.top + 'px');
+        });
+      }
       if (RM) return;
       const next = cards[i + 1];
       if (next) {
-        gsap.fromTo(card, { scale: 1, filter: 'brightness(1)' }, {
-          scale: 0.93, filter: 'brightness(0.6)', ease: 'none',
+        gsap.fromTo(card, { scale: 1, '--shade': 0 }, {
+          scale: 0.93, '--shade': 0.4, ease: 'none',
           scrollTrigger: { trigger: next, start: 'top 65%', end: `top ${110 + (i + 1) * 22}px`, scrub: true },
         });
       }
@@ -431,14 +473,12 @@
     let target = 1;
     const angles = { 1: 0, 2: 0, 3: 0 };
     let last = performance.now();
-    let visible = false;
-    new IntersectionObserver(([en]) => { visible = en.isIntersecting; }).observe(wrap);
+    let raf = 0;
 
     function place(now) {
-      requestAnimationFrame(place);
+      raf = requestAnimationFrame(place);
       const dt = Math.min(64, now - last);
       last = now;
-      if (!visible) return;
       speed += (target - speed) * 0.08;
       Object.keys(angles).forEach((k) => { angles[k] += conf[k].speed * dt * speed * (RM ? 0 : 1); });
       items.forEach((o) => {
@@ -447,7 +487,11 @@
         o.el.style.transform = `translate(-50%, -50%) translate(${Math.cos(a) * R}px, ${Math.sin(a) * R * 0.92}px)`;
       });
     }
-    requestAnimationFrame(place);
+    place(last);
+    new IntersectionObserver(([en]) => {
+      cancelAnimationFrame(raf);
+      if (en.isIntersecting && !RM) { last = performance.now(); raf = requestAnimationFrame(place); }
+    }).observe(wrap);
 
     function hot(o) {
       items.forEach((x) => x.el.classList.toggle('is-hot', x === o));
@@ -491,10 +535,17 @@
       s: gsap.quickTo(c, 'scaleY', { duration: 0.6, ease: 'power3' }),
     }));
     const section = $('#contact');
-    section.addEventListener('pointermove', (e) => {
-      setters.forEach(({ c, y, s }) => {
+    let centers = null;
+    section.addEventListener('pointerenter', () => {
+      centers = setters.map(({ c }) => {
         const r = c.getBoundingClientRect();
-        const d = Math.hypot(e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2));
+        return { x: r.left + r.width / 2 + window.scrollX, y: r.top + r.height / 2 + window.scrollY };
+      });
+    });
+    section.addEventListener('pointermove', (e) => {
+      if (!centers) return;
+      setters.forEach(({ c, y, s }, k) => {
+        const d = Math.hypot(e.pageX - centers[k].x, e.pageY - centers[k].y);
         const f = Math.max(0, 1 - d / 320);
         y(-f * 38);
         s(1 + f * 0.18);
