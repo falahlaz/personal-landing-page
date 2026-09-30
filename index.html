@@ -5,804 +5,353 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Al Falah Lazuardi — Backend Engineer · Node.js · TypeScript · Golang</title>
   <meta name="description" content="Al Falah Lazuardi — backend engineer with 5 years shipping production systems in Node.js, TypeScript and Golang. Open to roles worldwide.">
-  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0a0a0b">
+  <script>document.documentElement.classList.add('js');</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..800;1,9..144,300..600&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --paper: #f2eee4;
-      --paper-2: #e9e3d5;
-      --ink: #16140f;
-      --ink-2: #4a463c;
-      --ink-3: #8a8474;
-      --rule: #cfc7b4;
-      --accent: #ff4f00;
-      --accent-ink: #ffffff;
-      --grid: rgba(22, 20, 15, 0.045);
-
-      --serif: 'Fraunces', Georgia, serif;
-      --sans: 'IBM Plex Sans', system-ui, sans-serif;
-      --mono: 'IBM Plex Mono', ui-monospace, monospace;
-
-      --wrap: 1180px;
-      --gutter: clamp(16px, 4vw, 40px);
-    }
-
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --paper: #12110e;
-        --paper-2: #1b1a16;
-        --ink: #ede8db;
-        --ink-2: #b9b3a3;
-        --ink-3: #7d7768;
-        --rule: #34312a;
-        --accent: #ff6a24;
-        --accent-ink: #12110e;
-        --grid: rgba(237, 232, 219, 0.035);
-      }
-    }
-
-    html { scroll-behavior: smooth; }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      *, *::before, *::after { animation: none !important; transition: none !important; }
-    }
-
-    body {
-      font-family: var(--sans);
-      font-size: 17px;
-      line-height: 1.65;
-      color: var(--ink);
-      background-color: var(--paper);
-      background-image:
-        linear-gradient(var(--grid) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-      background-size: 32px 32px;
-      -webkit-font-smoothing: antialiased;
-      overflow-x: hidden;
-    }
-
-    ::selection { background: var(--accent); color: var(--accent-ink); }
-
-    a { color: inherit; }
-
-    .wrap {
-      max-width: var(--wrap);
-      margin: 0 auto;
-      padding: 0 var(--gutter);
-    }
-
-    .mono {
-      font-family: var(--mono);
-      font-size: 12.5px;
-      letter-spacing: 0.02em;
-      text-transform: uppercase;
-    }
-
-    /* ── STATUS BAR ── */
-    .statusbar {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: var(--ink);
-      color: var(--paper);
-    }
-    .statusbar .wrap {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-      height: 40px;
-    }
-    .statusbar a { text-decoration: none; }
-    .sb-logo { font-weight: 600; }
-    .sb-live {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .sb-live::before {
-      content: '';
-      width: 7px; height: 7px;
-      border-radius: 50%;
-      background: #3ddc84;
-      box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.6);
-      animation: ping 2s infinite;
-    }
-    @keyframes ping {
-      0% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0.55); }
-      70% { box-shadow: 0 0 0 7px rgba(61, 220, 132, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(61, 220, 132, 0); }
-    }
-    .sb-nav {
-      margin-left: auto;
-      display: flex;
-      gap: 22px;
-      list-style: none;
-    }
-    .sb-nav a { opacity: 0.7; transition: opacity 0.2s; }
-    .sb-nav a:hover { opacity: 1; color: var(--accent); }
-    .sb-clock { opacity: 0.7; }
-
-    @media (max-width: 760px) {
-      .sb-nav, .sb-clock { display: none; }
-      .sb-live { margin-left: auto; }
-    }
-
-    /* ── HERO ── */
-    .hero {
-      padding: clamp(56px, 9vw, 120px) 0 clamp(48px, 7vw, 96px);
-      border-bottom: 1px solid var(--rule);
-    }
-    .hero-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px 28px;
-      color: var(--ink-3);
-      margin-bottom: 36px;
-    }
-    .hero-meta b { color: var(--ink); font-weight: 500; }
-
-    .hero-name {
-      font-family: var(--serif);
-      font-weight: 700;
-      font-variation-settings: 'opsz' 144;
-      font-size: clamp(56px, 12.5vw, 176px);
-      line-height: 0.88;
-      letter-spacing: -0.045em;
-    }
-    .hero-name .line { display: block; overflow: hidden; }
-    .hero-name .line span {
-      display: inline-block;
-      animation: rise 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
-    }
-    .hero-name .line:nth-child(2) span { animation-delay: 0.08s; }
-    .hero-name .line:nth-child(3) span { animation-delay: 0.16s; }
-    .hero-name em {
-      font-style: italic;
-      font-weight: 400;
-      color: var(--accent);
-    }
-    @keyframes rise {
-      from { transform: translateY(105%); }
-      to { transform: translateY(0); }
-    }
-
-    .hero-bottom {
-      display: grid;
-      grid-template-columns: 1.1fr 1fr;
-      gap: clamp(32px, 6vw, 80px);
-      margin-top: clamp(40px, 6vw, 72px);
-      align-items: end;
-    }
-    .hero-lede {
-      font-family: var(--serif);
-      font-weight: 400;
-      font-variation-settings: 'opsz' 36;
-      font-size: clamp(22px, 2.4vw, 30px);
-      line-height: 1.3;
-      letter-spacing: -0.01em;
-      max-width: 30ch;
-    }
-    .hero-lede strong { font-weight: 600; }
-    .hero-cta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      margin-top: 32px;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px 22px;
-      font-family: var(--mono);
-      font-size: 13px;
-      font-weight: 500;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      text-decoration: none;
-      border: 1.5px solid var(--ink);
-      transition: transform 0.15s, box-shadow 0.15s, background 0.15s, color 0.15s;
-    }
-    .btn-solid {
-      background: var(--accent);
-      border-color: var(--accent);
-      color: var(--accent-ink);
-      box-shadow: 4px 4px 0 var(--ink);
-    }
-    .btn-solid:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink); }
-    .btn-line:hover { background: var(--ink); color: var(--paper); }
-
-    /* benchmark panel */
-    .bench {
-      border: 1.5px solid var(--ink);
-      background: var(--paper);
-    }
-    .bench-hd {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 16px;
-      border-bottom: 1.5px solid var(--ink);
-      background: var(--paper-2);
-    }
-    .bench-row {
-      padding: 14px 16px 16px;
-      border-bottom: 1px dashed var(--rule);
-    }
-    .bench-row:last-child { border-bottom: 0; }
-    .bench-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-      margin-bottom: 8px;
-    }
-    .bench-lbl { font-size: 14px; color: var(--ink-2); }
-    .bench-num {
-      font-family: var(--serif);
-      font-weight: 700;
-      font-size: 28px;
-      line-height: 1;
-      letter-spacing: -0.02em;
-      color: var(--accent);
-    }
-    .bench-bars { display: grid; gap: 4px; }
-    .bar {
-      display: grid;
-      grid-template-columns: 48px 1fr;
-      align-items: center;
-      gap: 10px;
-      font-family: var(--mono);
-      font-size: 10.5px;
-      text-transform: uppercase;
-      color: var(--ink-3);
-    }
-    .bar-track { height: 8px; background: var(--paper-2); }
-    .bar-fill {
-      height: 100%;
-      width: 0;
-      background: var(--ink-3);
-      transition: width 1.2s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .bar.after .bar-fill { background: var(--ink); }
-    .bench.show .bar-fill { width: var(--w); }
-
-    @media (max-width: 860px) {
-      .hero-bottom { grid-template-columns: 1fr; }
-    }
-
-    /* ── SECTIONS ── */
-    section.block {
-      padding: clamp(64px, 9vw, 120px) 0;
-      border-bottom: 1px solid var(--rule);
-    }
-    .sec-grid {
-      display: grid;
-      grid-template-columns: 220px 1fr;
-      gap: clamp(24px, 5vw, 64px);
-    }
-    .sec-label {
-      position: sticky;
-      top: 72px;
-      align-self: start;
-      color: var(--ink-3);
-    }
-    .sec-label .idx {
-      display: block;
-      font-family: var(--serif);
-      font-size: 56px;
-      font-weight: 300;
-      font-style: italic;
-      line-height: 1;
-      color: var(--accent);
-      text-transform: none;
-      letter-spacing: -0.03em;
-      margin-bottom: 10px;
-    }
-    .sec-title {
-      font-family: var(--serif);
-      font-weight: 600;
-      font-variation-settings: 'opsz' 96;
-      font-size: clamp(34px, 5vw, 60px);
-      line-height: 1.02;
-      letter-spacing: -0.03em;
-      max-width: 18ch;
-      margin-bottom: clamp(32px, 5vw, 56px);
-    }
-    .sec-title em { font-style: italic; font-weight: 400; color: var(--accent); }
-
-    @media (max-width: 860px) {
-      .sec-grid { grid-template-columns: 1fr; }
-      .sec-label { position: static; }
-      .sec-label .idx { font-size: 40px; }
-    }
-
-    /* ── ABOUT ── */
-    .about-body {
-      display: grid;
-      grid-template-columns: 1.5fr 1fr;
-      gap: clamp(32px, 5vw, 64px);
-    }
-    .about-text p { color: var(--ink-2); margin-bottom: 1.1em; max-width: 60ch; }
-    .about-text p:first-child::first-letter {
-      font-family: var(--serif);
-      font-weight: 700;
-      float: left;
-      font-size: 4.2em;
-      line-height: 0.8;
-      margin: 0.08em 0.1em 0 0;
-      color: var(--accent);
-    }
-    .about-text strong { color: var(--ink); font-weight: 600; }
-    .about-text em { font-style: italic; color: var(--ink); }
-
-    .facts { border-top: 1.5px solid var(--ink); }
-    .fact {
-      display: grid;
-      gap: 4px;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--rule);
-    }
-    .fact .mono { color: var(--ink-3); font-size: 11.5px; }
-    .fact-val { font-size: 15.5px; }
-    .fact-val a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
-
-    @media (max-width: 860px) {
-      .about-body { grid-template-columns: 1fr; }
-    }
-
-    /* ── EXPERIENCE ── */
-    .job {
-      display: grid;
-      grid-template-columns: 170px 1fr;
-      gap: clamp(16px, 4vw, 48px);
-      padding: 36px 0;
-      border-top: 1.5px solid var(--ink);
-    }
-    .job:last-child { border-bottom: 1.5px solid var(--ink); }
-    .job-when { color: var(--ink-3); }
-    .job-when .now {
-      display: inline-block;
-      margin-top: 8px;
-      padding: 3px 8px;
-      background: var(--accent);
-      color: var(--accent-ink);
-    }
-    .job-co {
-      font-family: var(--serif);
-      font-weight: 600;
-      font-size: clamp(24px, 2.8vw, 32px);
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-    }
-    .job-role { color: var(--ink-3); margin: 6px 0 16px; }
-    .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
-    .tag {
-      font-family: var(--mono);
-      font-size: 11.5px;
-      padding: 3px 9px;
-      border: 1px solid var(--rule);
-      color: var(--ink-2);
-      background: var(--paper);
-    }
-    .job ul { list-style: none; display: grid; gap: 10px; }
-    .job li {
-      position: relative;
-      padding-left: 26px;
-      color: var(--ink-2);
-      max-width: 72ch;
-    }
-    .job li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      font-family: var(--mono);
-      color: var(--accent);
-    }
-    .job li strong {
-      color: var(--ink);
-      font-weight: 600;
-      background: linear-gradient(transparent 62%, color-mix(in srgb, var(--accent) 28%, transparent) 62%);
-    }
-    .job li em { font-style: italic; color: var(--ink); }
-
-    @media (max-width: 700px) {
-      .job { grid-template-columns: 1fr; }
-    }
-
-    /* ── SKILLS ── */
-    .skills-table { border-top: 1.5px solid var(--ink); }
-    .skill-row {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 24px;
-      padding: 22px 0;
-      border-bottom: 1px solid var(--rule);
-      align-items: start;
-    }
-    .skill-lvl { display: flex; align-items: center; gap: 10px; color: var(--ink-3); padding-top: 4px; }
-    .pips { display: inline-flex; gap: 3px; }
-    .pips i { width: 8px; height: 8px; border: 1px solid var(--ink); }
-    .pips i.on { background: var(--ink); }
-    .skill-list {
-      font-family: var(--serif);
-      font-size: clamp(20px, 2.2vw, 26px);
-      line-height: 1.45;
-      letter-spacing: -0.01em;
-    }
-    .skill-list span:not(:last-child)::after {
-      content: ' / ';
-      color: var(--rule);
-      font-weight: 300;
-    }
-    .skill-row.top .skill-list { font-weight: 600; }
-
-    @media (max-width: 700px) {
-      .skill-row { grid-template-columns: 1fr; gap: 8px; }
-    }
-
-    /* ── EDUCATION ── */
-    .edu-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0;
-      border: 1.5px solid var(--ink);
-    }
-    .edu {
-      padding: 28px;
-      background: var(--paper);
-    }
-    .edu + .edu { border-left: 1.5px solid var(--ink); }
-    .edu .mono { color: var(--ink-3); }
-    .edu-deg {
-      font-family: var(--serif);
-      font-weight: 600;
-      font-size: 24px;
-      line-height: 1.2;
-      letter-spacing: -0.015em;
-      margin: 12px 0 4px;
-    }
-    .edu-school { color: var(--ink-2); }
-    .edu-award {
-      margin-top: 18px;
-      padding-top: 14px;
-      border-top: 1px dashed var(--rule);
-      display: grid;
-      gap: 6px;
-      font-size: 14.5px;
-    }
-    .edu-award span::before { content: '★ '; color: var(--accent); }
-
-    @media (max-width: 700px) {
-      .edu-grid { grid-template-columns: 1fr; }
-      .edu + .edu { border-left: 0; border-top: 1.5px solid var(--ink); }
-    }
-
-    /* ── CONTACT ── */
-    .contact {
-      background: var(--accent);
-      color: var(--accent-ink);
-      padding: clamp(72px, 10vw, 140px) 0;
-      --ink: var(--accent-ink);
-    }
-    .contact .mono { opacity: 0.8; }
-    .contact-title {
-      font-family: var(--serif);
-      font-weight: 700;
-      font-variation-settings: 'opsz' 144;
-      font-size: clamp(44px, 8vw, 112px);
-      line-height: 0.92;
-      letter-spacing: -0.04em;
-      margin: 20px 0 32px;
-      max-width: 14ch;
-    }
-    .contact-title em { font-style: italic; font-weight: 400; }
-    .contact-desc { max-width: 56ch; font-size: 18px; margin-bottom: 40px; opacity: 0.92; }
-    .contact-email {
-      display: inline-block;
-      font-family: var(--serif);
-      font-style: italic;
-      font-size: clamp(22px, 4.2vw, 52px);
-      letter-spacing: -0.02em;
-      text-decoration: none;
-      border-bottom: 3px solid currentColor;
-      padding-bottom: 4px;
-      word-break: break-all;
-      transition: opacity 0.2s;
-    }
-    .contact-email:hover { opacity: 0.75; }
-    .contact-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 44px;
-    }
-    .chip {
-      font-family: var(--mono);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-      padding: 8px 14px;
-      border: 1.5px solid currentColor;
-    }
-    .chip a { text-decoration: none; }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--ink);
-      color: var(--paper);
-      padding: 22px 0;
-    }
-    footer .wrap {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      gap: 12px;
-      opacity: 0.7;
-    }
-
-    /* ── REVEAL ── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.8, 0.2, 1);
-    }
-    .reveal.show { opacity: 1; transform: none; }
-    @media (prefers-reduced-motion: reduce) {
-      .reveal { opacity: 1; transform: none; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
-  <!-- STATUS BAR -->
-  <header class="statusbar mono">
-    <div class="wrap">
-      <a href="#top" class="sb-logo">falah.dev</a>
-      <span class="sb-live">Open to work</span>
-      <ul class="sb-nav">
-        <li><a href="#about">About</a></li>
-        <li><a href="#experience">Work</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-      <span class="sb-clock" id="clock">Jakarta —:—</span>
+  <!-- PRELOADER -->
+  <div class="preloader" id="preloader" aria-hidden="true">
+    <div class="pl-log" id="plLog"></div>
+    <div class="pl-bottom">
+      <span class="pl-label">booting falah.dev</span>
+      <span class="pl-count" id="plCount">000</span>
     </div>
+    <div class="pl-bar"><i id="plBar"></i></div>
+  </div>
+
+  <!-- CURSOR -->
+  <div class="cursor-dot" id="cursorDot"></div>
+  <div class="cursor-ring" id="cursorRing"><span id="cursorLabel"></span></div>
+
+  <!-- SCROLL PROGRESS -->
+  <div class="progress"><i id="progress"></i></div>
+
+  <!-- NAV -->
+  <header class="nav" id="nav">
+    <a href="#top" class="nav-logo" data-magnetic>falah<span>.dev</span></a>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="#about" data-hover-text="About">About</a></li>
+        <li><a href="#experience" data-hover-text="Work">Work</a></li>
+        <li><a href="#skills" data-hover-text="Skills">Skills</a></li>
+        <li><a href="#terminal" data-hover-text="Terminal">Terminal</a></li>
+        <li><a href="#contact" data-hover-text="Contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="#contact" class="nav-status" data-magnetic><span class="pulse"></span>Open to work</a>
   </header>
 
   <main id="top">
 
     <!-- HERO -->
-    <section class="hero">
-      <div class="wrap">
-        <div class="hero-meta mono">
-          <span><b>Backend Engineer</b></span>
-          <span>Node.js · TypeScript · Golang</span>
-          <span>5 yrs in production</span>
-          <span>Worldwide · Remote or On-site</span>
+    <section class="hero" id="hero">
+      <canvas class="hero-canvas" id="net" aria-hidden="true"></canvas>
+      <div class="hero-grain" aria-hidden="true"></div>
+
+      <div class="hero-inner">
+        <div class="hero-meta">
+          <span class="hm-item">Backend Engineer</span>
+          <span class="hm-item">East Jakarta, ID · <span id="clock">--:--</span> WIB</span>
+          <span class="hm-item">Worldwide · Remote or On-site</span>
         </div>
 
-        <h1 class="hero-name">
-          <span class="line"><span>Al Falah</span></span>
-          <span class="line"><span>Lazuardi<em>.</em></span></span>
+        <h1 class="hero-name" aria-label="Al Falah Lazuardi">
+          <span class="hn-line" data-split>Al Falah</span>
+          <span class="hn-line hn-outline" data-split>Lazuardi</span>
         </h1>
 
-        <div class="hero-bottom">
-          <div>
-            <p class="hero-lede">
-              I ship fast backends — <strong>then I make them faster</strong>, with the before/after numbers to prove it.
-            </p>
-            <div class="hero-cta">
-              <a href="mailto:alfalahlazuardim@gmail.com" class="btn btn-solid">Email me →</a>
-              <a href="#experience" class="btn btn-line">See my work</a>
-            </div>
+        <div class="hero-row">
+          <p class="hero-role">
+            <span class="hr-prefix">&gt;</span>
+            <span id="roleText">Backend Engineer</span><span class="caret"></span>
+          </p>
+          <div class="hero-cta">
+            <a href="mailto:alfalahlazuardim@gmail.com" class="btn btn-primary" data-magnetic data-cursor="Say hi">
+              <span class="btn-fill"></span><span class="btn-text">Email me</span><span class="btn-arrow">↗</span>
+            </a>
+            <a href="#experience" class="btn btn-ghost" data-magnetic data-cursor="Scroll">
+              <span class="btn-fill"></span><span class="btn-text">See my work</span><span class="btn-arrow">↓</span>
+            </a>
           </div>
+        </div>
+      </div>
 
-          <div class="bench reveal" id="bench" aria-label="Performance results">
-            <div class="bench-hd mono"><span>benchmarks.log</span><span>before / after</span></div>
-            <div class="bench-row">
-              <div class="bench-top"><span class="bench-lbl">API throughput</span><span class="bench-num">12×</span></div>
-              <div class="bench-bars">
-                <div class="bar"><span>before</span><div class="bar-track"><div class="bar-fill" style="--w:8.3%"></div></div></div>
-                <div class="bar after"><span>after</span><div class="bar-track"><div class="bar-fill" style="--w:100%"></div></div></div>
-              </div>
-            </div>
-            <div class="bench-row">
-              <div class="bench-top"><span class="bench-lbl">Query latency</span><span class="bench-num">−60%</span></div>
-              <div class="bench-bars">
-                <div class="bar"><span>before</span><div class="bar-track"><div class="bar-fill" style="--w:100%"></div></div></div>
-                <div class="bar after"><span>after</span><div class="bar-track"><div class="bar-fill" style="--w:40%"></div></div></div>
-              </div>
-            </div>
-            <div class="bench-row">
-              <div class="bench-top"><span class="bench-lbl">Records per import job</span><span class="bench-num">3K+</span></div>
-              <div class="bench-bars">
-                <div class="bar"><span>before</span><div class="bar-track"><div class="bar-fill" style="--w:6.7%"></div></div></div>
-                <div class="bar after"><span>after</span><div class="bar-track"><div class="bar-fill" style="--w:100%"></div></div></div>
-              </div>
-            </div>
-            <div class="bench-row">
-              <div class="bench-top"><span class="bench-lbl">Daily transactions handled</span><span class="bench-num">15K</span></div>
-            </div>
-          </div>
+      <div class="hero-scroll" aria-hidden="true">
+        <span>scroll</span><i></i>
+      </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <section class="marquee" aria-label="Tech stack">
+      <div class="mq-row" data-dir="1">
+        <div class="mq-track">
+          <span>Node.js</span><b>✦</b><span>TypeScript</span><b>✦</b><span>Golang</span><b>✦</b><span>PostgreSQL</span><b>✦</b><span>Redis</span><b>✦</b><span>Microservices</span><b>✦</b><span>Kafka</span><b>✦</b>
+          <span>Node.js</span><b>✦</b><span>TypeScript</span><b>✦</b><span>Golang</span><b>✦</b><span>PostgreSQL</span><b>✦</b><span>Redis</span><b>✦</b><span>Microservices</span><b>✦</b><span>Kafka</span><b>✦</b>
+        </div>
+      </div>
+      <div class="mq-row mq-alt" data-dir="-1">
+        <div class="mq-track">
+          <span>12× throughput</span><b>/</b><span>−60% latency</span><b>/</b><span>3K+ records per job</span><b>/</b><span>15K daily transactions</span><b>/</b><span>10× faster payroll</span><b>/</b>
+          <span>12× throughput</span><b>/</b><span>−60% latency</span><b>/</b><span>3K+ records per job</span><b>/</b><span>15K daily transactions</span><b>/</b><span>10× faster payroll</span><b>/</b>
         </div>
       </div>
     </section>
 
     <!-- ABOUT -->
-    <section class="block" id="about">
-      <div class="wrap sec-grid">
-        <div class="sec-label mono"><span class="idx">01</span>About</div>
-        <div>
-          <h2 class="sec-title reveal">I ship fast backends. <em>Then I make them faster.</em></h2>
-          <div class="about-body">
-            <div class="about-text reveal">
-              <p>
-                I've spent five years shipping <strong>backend systems in production</strong> —
-                ride-hailing, fintech, and government infrastructure. My primary stack is
-                Node.js and TypeScript; I've been writing Golang for microservices for the past two years.
-              </p>
-              <p>
-                Performance is where I go deep. I cut API response time <strong>12×</strong>
-                in a single refactor by rearchitecting O(n²) logic to O(n log n). I reduced
-                database query latency by <strong>60%</strong> through index analysis and query
-                rewrites. Every optimization I ship comes with measured before/after data.
-              </p>
-              <p>
-                I use <em>AI-assisted tooling</em> (Claude Code, GPT Codex) as a core part of
-                my daily workflow — not occasionally, but as a productivity layer that lets me
-                move faster without cutting corners. I'm looking for
-                <strong>backend or software engineering roles worldwide</strong> —
-                remote or on-site. Open to visa sponsorship where needed.
-              </p>
+    <section class="section about" id="about">
+      <div class="container">
+        <div class="eyebrow"><span class="eb-num">01</span> About me</div>
+        <p class="statement" data-scrub>
+          I ship fast backends. Then I make them faster — ride-hailing, fintech and government
+          infrastructure, five years in production, with before/after data behind every optimization.
+        </p>
+
+        <div class="about-grid">
+          <div class="about-text">
+            <p data-reveal>
+              I've spent five years shipping <strong>backend systems in production</strong> —
+              ride-hailing, fintech, and government infrastructure. My primary stack is
+              Node.js and TypeScript; I've been writing Golang for microservices for the past two years.
+            </p>
+            <p data-reveal>
+              Performance is where I go deep. I cut API response time <strong>12×</strong>
+              in a single refactor by rearchitecting O(n²) logic to O(n log n). I reduced
+              database query latency by <strong>60%</strong> through index analysis and query
+              rewrites. Every optimization I ship comes with measured before/after data.
+            </p>
+            <p data-reveal>
+              I use <em>AI-assisted tooling</em> (Claude Code, GPT Codex) as a core part of
+              my daily workflow — not occasionally, but as a productivity layer that lets me
+              move faster without cutting corners. I'm looking for
+              <strong>backend or software engineering roles worldwide</strong> —
+              remote or on-site. Open to visa sponsorship where needed.
+            </p>
+          </div>
+          <div class="facts">
+            <div class="fact" data-reveal>
+              <span class="fact-k">Location</span>
+              <span class="fact-v">East Jakarta, Indonesia<br>Remote or relocate worldwide</span>
             </div>
-            <div class="facts reveal">
-              <div class="fact">
-                <span class="mono">Location</span>
-                <span class="fact-val">East Jakarta, Indonesia<br>Remote or relocate worldwide</span>
-              </div>
-              <div class="fact">
-                <span class="mono">Contact</span>
-                <span class="fact-val">
-                  <a href="mailto:alfalahlazuardim@gmail.com">alfalahlazuardim@gmail.com</a><br>
-                  +62 851 7300 9061
-                </span>
-              </div>
-              <div class="fact">
-                <span class="mono">Visa</span>
-                <span class="fact-val">Open to visa sponsorship<br>or remote worldwide</span>
-              </div>
+            <div class="fact" data-reveal>
+              <span class="fact-k">Contact</span>
+              <span class="fact-v"><a href="mailto:alfalahlazuardim@gmail.com" class="ulink">alfalahlazuardim@gmail.com</a><br>+62 851 7300 9061</span>
+            </div>
+            <div class="fact" data-reveal>
+              <span class="fact-k">Visa</span>
+              <span class="fact-v">Open to visa sponsorship<br>or remote worldwide</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- EXPERIENCE -->
-    <section class="block" id="experience">
-      <div class="wrap sec-grid">
-        <div class="sec-label mono"><span class="idx">02</span>Work</div>
-        <div>
-          <h2 class="sec-title reveal">5 years. 3 companies. <em>Systems that still run in production.</em></h2>
-
-          <article class="job reveal">
-            <div class="job-when mono">Jan 2023 — Present<br><span class="now">Current</span></div>
-            <div>
-              <h3 class="job-co">PT Code Development Indonesia</h3>
-              <div class="job-role mono">Backend Engineer</div>
-              <div class="tags">
-                <span class="tag">Node.js</span><span class="tag">TypeScript</span><span class="tag">Golang</span>
-                <span class="tag">PostgreSQL</span><span class="tag">Redis</span><span class="tag">Firebase</span>
-                <span class="tag">AWS S3</span><span class="tag">PGP/AES-256</span>
-              </div>
-              <ul>
-                <li>Designed and shipped the <em>Go-Semolis wallet service</em> from zero to production — full payment gateway integration, complete transaction lifecycle management.</li>
-                <li>Diagnosed query bottlenecks on the Nuun project and cut latency <strong>60%</strong> through targeted indexing and query rewrites — zero downtime.</li>
-                <li>Eliminated a padding oracle vulnerability in <em>MyTelkomsel</em> by migrating AES-256 CBC → GCM encryption before it became a breach.</li>
-                <li>Achieved <strong>12× API throughput</strong> by rearchitecting O(n²) offer filtering to O(n log n) — measured improvement, shipped to production.</li>
-                <li>Built multi-channel notification infrastructure (email/SMTP, push via Firebase, in-app) now used across multiple products.</li>
-                <li>Shipped real-time Hajj/Umrah pilgrim tracking service in Golang — PostgreSQL + Redis pub/sub for low-latency location updates.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="job reveal">
-            <div class="job-when mono">Aug 2023 — Aug 2024</div>
-            <div>
-              <h3 class="job-co">PT Stafbook Teknologi Asia</h3>
-              <div class="job-role mono">Backend Engineer · Contract</div>
-              <div class="tags">
-                <span class="tag">Laravel</span><span class="tag">MySQL</span><span class="tag">Redis</span>
-                <span class="tag">WebSocket</span><span class="tag">Queue</span>
-              </div>
-              <ul>
-                <li>Scaled employee import capacity from 200 to <strong>3,000+ records per job</strong> — identified N+1 bottleneck, moved to async processing with Laravel Queue, <strong>70% throughput gain</strong>.</li>
-                <li>Made payroll calculations <strong>10× faster</strong> on large datasets by eliminating cascading N+1 queries throughout the module.</li>
-                <li>Cut scheduling-related support tickets by <strong>80%</strong> by redesigning the scheduling logic from scratch instead of patching it.</li>
-                <li>Added real-time WebSocket notifications for long-running import jobs — users no longer had to guess when their data was ready.</li>
-              </ul>
-            </div>
-          </article>
-
-          <article class="job reveal">
-            <div class="job-when mono">Mar 2020 — Jan 2023</div>
-            <div>
-              <h3 class="job-co">PT Solu Filantropi Teknologi</h3>
-              <div class="job-role mono">Backend Engineer</div>
-              <div class="tags">
-                <span class="tag">Golang</span><span class="tag">Laravel</span><span class="tag">Lumen</span>
-                <span class="tag">PostgreSQL</span><span class="tag">Docker</span><span class="tag">Microservices</span>
-              </div>
-              <ul>
-                <li>Delivered a warehouse &amp; logistics platform for <em>PT HM Sampoerna</em> handling <strong>15,000+ daily transactions</strong> — brought error rate down by <strong>85%</strong> and delivery success to 95%.</li>
-                <li>Cut manual processing by <strong>60%</strong> for <em>Indonesia's Ministry of Education</em> by automating fund disbursement tracking across 5,000 transactions.</li>
-                <li>Increased order volume by <strong>30%</strong> for <em>PT Pertamina</em> by building a WhatsApp ordering bot (Twilio + Dialogflow) — no app install required for end users.</li>
-                <li>Improved operational efficiency by <strong>80%</strong> for the <em>State Civil Service Commission's</em> complaint portal — Lumen backend, AngularJS frontend, Keycloak SSO.</li>
-              </ul>
-            </div>
-          </article>
+    <!-- METRICS -->
+    <section class="section metrics" id="metrics">
+      <div class="container">
+        <div class="eyebrow"><span class="eb-num">02</span> Numbers, not adjectives</div>
+        <div class="metric-grid">
+          <div class="metric" data-tilt>
+            <div class="m-num"><span data-count="12">12</span>×</div>
+            <div class="m-lbl">API throughput</div>
+            <div class="m-bars"><i style="--w:8%"></i><i class="after" style="--w:100%"></i></div>
+            <div class="m-note">O(n²) → O(n log n)</div>
+          </div>
+          <div class="metric" data-tilt>
+            <div class="m-num">−<span data-count="60">60</span>%</div>
+            <div class="m-lbl">query latency</div>
+            <div class="m-bars"><i style="--w:100%"></i><i class="after" style="--w:40%"></i></div>
+            <div class="m-note">indexing + query rewrites</div>
+          </div>
+          <div class="metric" data-tilt>
+            <div class="m-num"><span data-count="3000" data-format="k">3K</span>+</div>
+            <div class="m-lbl">records per import job</div>
+            <div class="m-bars"><i style="--w:7%"></i><i class="after" style="--w:100%"></i></div>
+            <div class="m-note">up from 200, async queues</div>
+          </div>
+          <div class="metric" data-tilt>
+            <div class="m-num"><span data-count="15000" data-format="k">15K</span></div>
+            <div class="m-lbl">daily transactions</div>
+            <div class="m-bars"><i class="after" style="--w:100%"></i></div>
+            <div class="m-note">−85% error rate</div>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- SKILLS -->
-    <section class="block" id="skills">
-      <div class="wrap sec-grid">
-        <div class="sec-label mono"><span class="idx">03</span>Skills</div>
+    <!-- EXPERIENCE (horizontal on desktop) -->
+    <section class="experience" id="experience">
+      <div class="exp-pin">
+        <div class="exp-progress"><i id="expProgress"></i></div>
+        <div class="exp-track" id="expTrack">
+
+          <div class="exp-panel exp-intro">
+            <div class="eyebrow"><span class="eb-num">03</span> Work experience</div>
+            <h2 class="big-title" data-split-words>5 years. 3 companies. <em>Systems that still run in production.</em></h2>
+            <p class="exp-hint">Keep scrolling <span>→</span></p>
+          </div>
+
+          <article class="exp-panel job" data-tilt-soft>
+            <div class="job-idx">01</div>
+            <div class="job-head">
+              <span class="job-when">Jan 2023 — Present <b class="job-now">Current</b></span>
+              <h3 class="job-co">PT Code Development Indonesia</h3>
+              <span class="job-role">Backend Engineer</span>
+            </div>
+            <div class="tags">
+              <span>Node.js</span><span>TypeScript</span><span>Golang</span><span>PostgreSQL</span>
+              <span>Redis</span><span>Firebase</span><span>AWS S3</span><span>PGP/AES-256</span>
+            </div>
+            <ul class="job-list">
+              <li>Designed and shipped the <em>Go-Semolis wallet service</em> from zero to production — full payment gateway integration, complete transaction lifecycle management.</li>
+              <li>Diagnosed query bottlenecks on the Nuun project and cut latency <strong>60%</strong> through targeted indexing and query rewrites — zero downtime.</li>
+              <li>Eliminated a padding oracle vulnerability in <em>MyTelkomsel</em> by migrating AES-256 CBC → GCM encryption before it became a breach.</li>
+              <li>Achieved <strong>12× API throughput</strong> by rearchitecting O(n²) offer filtering to O(n log n) — measured improvement, shipped to production.</li>
+              <li>Built multi-channel notification infrastructure (email/SMTP, push via Firebase, in-app) now used across multiple products.</li>
+              <li>Shipped real-time Hajj/Umrah pilgrim tracking service in Golang — PostgreSQL + Redis pub/sub for low-latency location updates.</li>
+            </ul>
+          </article>
+
+          <article class="exp-panel job" data-tilt-soft>
+            <div class="job-idx">02</div>
+            <div class="job-head">
+              <span class="job-when">Aug 2023 — Aug 2024</span>
+              <h3 class="job-co">PT Stafbook Teknologi Asia</h3>
+              <span class="job-role">Backend Engineer · Contract</span>
+            </div>
+            <div class="tags">
+              <span>Laravel</span><span>MySQL</span><span>Redis</span><span>WebSocket</span><span>Queue</span>
+            </div>
+            <ul class="job-list">
+              <li>Scaled employee import capacity from 200 to <strong>3,000+ records per job</strong> — identified N+1 bottleneck, moved to async processing with Laravel Queue, <strong>70% throughput gain</strong>.</li>
+              <li>Made payroll calculations <strong>10× faster</strong> on large datasets by eliminating cascading N+1 queries throughout the module.</li>
+              <li>Cut scheduling-related support tickets by <strong>80%</strong> by redesigning the scheduling logic from scratch instead of patching it.</li>
+              <li>Added real-time WebSocket notifications for long-running import jobs — users no longer had to guess when their data was ready.</li>
+            </ul>
+          </article>
+
+          <article class="exp-panel job" data-tilt-soft>
+            <div class="job-idx">03</div>
+            <div class="job-head">
+              <span class="job-when">Mar 2020 — Jan 2023</span>
+              <h3 class="job-co">PT Solu Filantropi Teknologi</h3>
+              <span class="job-role">Backend Engineer</span>
+            </div>
+            <div class="tags">
+              <span>Golang</span><span>Laravel</span><span>Lumen</span><span>PostgreSQL</span><span>Docker</span><span>Microservices</span>
+            </div>
+            <ul class="job-list">
+              <li>Delivered a warehouse &amp; logistics platform for <em>PT HM Sampoerna</em> handling <strong>15,000+ daily transactions</strong> — brought error rate down by <strong>85%</strong> and delivery success to 95%.</li>
+              <li>Cut manual processing by <strong>60%</strong> for <em>Indonesia's Ministry of Education</em> by automating fund disbursement tracking across 5,000 transactions.</li>
+              <li>Increased order volume by <strong>30%</strong> for <em>PT Pertamina</em> by building a WhatsApp ordering bot (Twilio + Dialogflow) — no app install required for end users.</li>
+              <li>Improved operational efficiency by <strong>80%</strong> for the <em>State Civil Service Commission's</em> complaint portal — Lumen backend, AngularJS frontend, Keycloak SSO.</li>
+            </ul>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SKILLS (physics playground) -->
+    <section class="section skills" id="skills">
+      <div class="container">
+        <div class="eyebrow"><span class="eb-num">04</span> Technical skills</div>
+        <div class="skills-head">
+          <h2 class="big-title" data-split-words>5 years of daily production use — <em>not just tutorials.</em></h2>
+          <div class="legend">
+            <span><i class="lg lg-expert"></i>Expert</span>
+            <span><i class="lg lg-adv"></i>Advanced</span>
+            <span><i class="lg lg-mid"></i>Intermediate</span>
+            <span><i class="lg lg-tool"></i>Daily tooling</span>
+          </div>
+        </div>
+
+        <div class="playground" id="playground" data-cursor="Drag">
+          <p class="pg-hint" id="pgHint">Grab &amp; throw my stack around ✦</p>
+          <button class="pg-shake" id="pgShake" type="button" data-magnetic>Shake it</button>
+          <div class="skill-list" id="skillList">
+            <span class="pill expert">Node.js</span>
+            <span class="pill expert">TypeScript</span>
+            <span class="pill expert">Golang</span>
+            <span class="pill expert">Laravel / PHP</span>
+            <span class="pill expert">REST API</span>
+            <span class="pill expert">Microservices</span>
+            <span class="pill expert">PostgreSQL</span>
+            <span class="pill expert">MySQL</span>
+            <span class="pill expert">Redis</span>
+            <span class="pill expert">Git</span>
+            <span class="pill adv">Docker</span>
+            <span class="pill adv">AWS S3</span>
+            <span class="pill adv">Kafka</span>
+            <span class="pill adv">WebSocket</span>
+            <span class="pill adv">Event-driven architecture</span>
+            <span class="pill mid">CI/CD</span>
+            <span class="pill tool">Claude Code</span>
+            <span class="pill tool">GPT Codex</span>
+            <span class="pill tool">AI-assisted development</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TERMINAL -->
+    <section class="section terminal-sec" id="terminal">
+      <div class="container term-grid">
         <div>
-          <h2 class="sec-title reveal">5 years of daily production use — <em>not just tutorials.</em></h2>
-          <div class="skills-table reveal">
-            <div class="skill-row top">
-              <div class="skill-lvl mono"><span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i></span>Expert</div>
-              <div class="skill-list">
-                <span>Node.js</span><span>TypeScript</span><span>Golang</span><span>Laravel / PHP</span><span>REST API</span><span>Microservices</span><span>PostgreSQL</span><span>MySQL</span><span>Redis</span><span>Git</span>
-              </div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-lvl mono"><span class="pips"><i class="on"></i><i class="on"></i><i></i></span>Advanced</div>
-              <div class="skill-list">
-                <span>Docker</span><span>AWS S3</span><span>Kafka</span><span>WebSocket</span><span>Event-driven architecture</span>
-              </div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-lvl mono"><span class="pips"><i class="on"></i><i></i><i></i></span>Intermediate</div>
-              <div class="skill-list"><span>CI/CD</span></div>
-            </div>
-            <div class="skill-row">
-              <div class="skill-lvl mono"><span class="pips"><i class="on"></i><i class="on"></i><i class="on"></i></span>Daily tooling</div>
-              <div class="skill-list">
-                <span>Claude Code</span><span>GPT Codex</span><span>AI-assisted development</span>
-              </div>
-            </div>
+          <div class="eyebrow"><span class="eb-num">05</span> Interactive</div>
+          <h2 class="big-title" data-split-words>Talk to my <em>API.</em></h2>
+          <p class="term-copy" data-reveal>
+            A tiny shell into my résumé. Type <code>help</code> to see what it can do,
+            or click one of the commands below.
+          </p>
+          <div class="term-quick" data-reveal>
+            <button type="button" data-cmd="whoami">whoami</button>
+            <button type="button" data-cmd="experience">experience</button>
+            <button type="button" data-cmd="skills">skills</button>
+            <button type="button" data-cmd="education">education</button>
+            <button type="button" data-cmd="contact">contact</button>
+            <button type="button" data-cmd="sudo hire falah">sudo hire falah</button>
+          </div>
+        </div>
+
+        <div class="term" id="term" data-cursor="Type">
+          <div class="term-bar">
+            <i></i><i></i><i></i>
+            <span>falah@dev: ~</span>
+          </div>
+          <div class="term-body" id="termBody" data-lenis-prevent>
+            <div id="termOut"></div>
+            <label class="term-line">
+              <span class="term-ps">falah@dev:~$</span>
+              <input id="termIn" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Terminal input">
+            </label>
           </div>
         </div>
       </div>
     </section>
 
     <!-- EDUCATION -->
-    <section class="block" id="education">
-      <div class="wrap sec-grid">
-        <div class="sec-label mono"><span class="idx">04</span>Education</div>
-        <div>
-          <h2 class="sec-title reveal">Started competing early. <em>Still do.</em></h2>
-          <div class="edu-grid reveal">
-            <div class="edu">
-              <div class="mono">2021 — 2025</div>
-              <div class="edu-deg">B.Sc. Information Systems</div>
-              <div class="edu-school">Binus University, Jakarta</div>
-            </div>
-            <div class="edu">
-              <div class="mono">2017 — 2021</div>
-              <div class="edu-deg">Computer Science Vocational</div>
-              <div class="edu-school">SMK Negeri 26 Jakarta</div>
-              <div class="edu-award">
-                <span>3rd Place · Web Design LKS SMK</span>
-                <span>3rd Place · Smartschool SEACC Batch 3 (Southeast Asia)</span>
-              </div>
+    <section class="section education" id="education">
+      <div class="container">
+        <div class="eyebrow"><span class="eb-num">06</span> Education</div>
+        <h2 class="big-title" data-split-words>Started competing early. <em>Still do.</em></h2>
+        <div class="edu-grid">
+          <div class="edu" data-tilt>
+            <span class="edu-when">2021 — 2025</span>
+            <h3 class="edu-deg">B.Sc. Information Systems</h3>
+            <span class="edu-school">Binus University, Jakarta</span>
+          </div>
+          <div class="edu" data-tilt>
+            <span class="edu-when">2017 — 2021</span>
+            <h3 class="edu-deg">Computer Science Vocational</h3>
+            <span class="edu-school">SMK Negeri 26 Jakarta</span>
+            <div class="edu-award">
+              <span>🏆 3rd Place · Web Design LKS SMK</span>
+              <span>🏆 3rd Place · Smartschool SEACC Batch 3 (Southeast Asia)</span>
             </div>
           </div>
         </div>
@@ -811,55 +360,52 @@
 
     <!-- CONTACT -->
     <section class="contact" id="contact">
-      <div class="wrap">
-        <div class="mono">05 — Get in touch</div>
-        <h2 class="contact-title">Hiring a backend engineer? <em>I'm available worldwide.</em></h2>
-        <p class="contact-desc">
+      <div class="contact-mq" aria-hidden="true">
+        <div class="cm-track">
+          <span>Let's build something fast</span><b>✦</b><span>Let's build something fast</span><b>✦</b>
+          <span>Let's build something fast</span><b>✦</b><span>Let's build something fast</span><b>✦</b>
+        </div>
+      </div>
+      <div class="container">
+        <div class="eyebrow"><span class="eb-num">07</span> Get in touch</div>
+        <h2 class="big-title" data-split-words>Hiring a backend engineer? <em>I'm available worldwide.</em></h2>
+        <p class="contact-desc" data-reveal>
           I'm actively looking for backend or software engineering roles worldwide —
           remote or on-site. Available for full-time positions.
           Open to visa sponsorship where needed — I'll handle the paperwork, you focus on the role.
         </p>
-        <a href="mailto:alfalahlazuardim@gmail.com" class="contact-email">alfalahlazuardim@gmail.com</a>
-        <div class="contact-meta">
-          <span class="chip">East Jakarta, Indonesia</span>
-          <span class="chip"><a href="tel:+6285173009061">+62 851 7300 9061</a></span>
-          <span class="chip">Remote-friendly</span>
-          <span class="chip">Open to relocate worldwide</span>
-          <span class="chip">Visa sponsorship welcome</span>
+
+        <div class="contact-mail" data-reveal>
+          <a href="mailto:alfalahlazuardim@gmail.com" class="mail-link" data-cursor="Send">
+            <span class="ml-text" data-text="alfalahlazuardim@gmail.com">alfalahlazuardim@gmail.com</span>
+          </a>
+          <button class="copy-btn" id="copyBtn" type="button" data-magnetic>Copy</button>
+        </div>
+
+        <div class="chips" data-reveal>
+          <span class="chip">📍 East Jakarta, Indonesia</span>
+          <a class="chip" href="tel:+6285173009061">📞 +62 851 7300 9061</a>
+          <span class="chip">💻 Remote-friendly</span>
+          <span class="chip">🌏 Open to relocate worldwide</span>
+          <span class="chip">📋 Visa sponsorship welcome</span>
         </div>
       </div>
     </section>
 
   </main>
 
-  <footer class="mono">
-    <div class="wrap">
-      <span>Al Falah Lazuardi Mahmudi · Backend Engineer</span>
-      <span>© <span id="year">2026</span> · Built by hand, no framework</span>
-    </div>
+  <footer class="footer">
+    <span>Al Falah Lazuardi Mahmudi · Backend Engineer · <span id="year">2026</span></span>
+    <a href="#top" class="to-top" data-magnetic>Back to top ↑</a>
   </footer>
 
-  <script>
-    // Live Jakarta clock
-    const clock = document.getElementById('clock');
-    const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit' });
-    const tick = () => { clock.textContent = 'Jakarta ' + fmt.format(new Date()) + ' WIB'; };
-    tick();
-    setInterval(tick, 30000);
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    document.getElementById('year').textContent = new Date().getFullYear();
-
-    // Scroll reveal (also triggers benchmark bars)
-    const obs = new IntersectionObserver((entries) => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.classList.add('show');
-          obs.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
-  </script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
+  <script src="assets/js/main.js"></script>
 </body>
 </html>
