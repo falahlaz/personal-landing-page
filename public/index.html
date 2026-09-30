@@ -1,30 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Al Falah Lazuardi — Backend Engineer · Node.js · TypeScript · Golang</title>
   <meta name="description" content="Al Falah Lazuardi — backend engineer with 5 years shipping production systems in Node.js, TypeScript and Golang. Open to roles worldwide.">
   <meta name="theme-color" content="#07070b">
+  <meta name="color-scheme" content="dark">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-  <script>document.documentElement.classList.add('js');</script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@500;600;700;800&family=Manrope:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="assets/css/aurora.css">
+  <script>document.documentElement.className = 'js';</script>
+  <!-- self-hosted fonts: no third-party round trips before first paint -->
+  <link rel="preload" href="/assets/fonts/syne-latin-wght-v5.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/manrope-latin-wght-v5.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/assets/css/aurora.css">
+  <script src="/assets/vendor/gsap-3.15.0.min.js" defer></script>
+  <script src="/assets/vendor/ScrollTrigger-3.15.0.min.js" defer></script>
+  <script src="/assets/vendor/lenis-1.3.26.min.js" defer></script>
+  <script src="/assets/js/aurora.js" defer></script>
 </head>
 <body>
-
-  <!-- LOADER -->
-  <div class="loader" id="loader" aria-hidden="true">
-    <div class="ld-half ld-top"></div>
-    <div class="ld-half ld-bot"></div>
-    <div class="ld-inner">
-      <div class="ld-name"><span>Al Falah Lazuardi</span></div>
-      <div class="ld-line"><i id="ldLine"></i></div>
-      <div class="ld-meta"><span>Backend Engineer</span><span id="ldPct">0%</span></div>
-    </div>
-  </div>
+  <a class="skip-link" href="#content">Skip to content</a>
 
   <div class="grain" aria-hidden="true"></div>
   <div class="spotlight" id="spotlight" aria-hidden="true"></div>
@@ -32,14 +27,14 @@
 
   <!-- TOP BAR -->
   <header class="bar" id="bar">
-    <a href="#top" class="brand" data-magnetic>falah<sup>®</sup></a>
+    <a href="#top" class="brand" data-magnetic translate="no" aria-label="Al Falah Lazuardi — back to top">falah<sup aria-hidden="true">®</sup></a>
     <div class="bar-mid">
-      <span class="avail"><i></i>Available for work</span>
-      <span class="bar-clock">Jakarta <b id="clock">--:--</b></span>
+      <span class="avail"><i aria-hidden="true"></i>Available for work</span>
+      <span class="bar-clock">Jakarta <time id="clock">--:--</time></span>
     </div>
     <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu" data-magnetic>
       <span class="mb-text"><span>Menu</span><span>Close</span></span>
-      <span class="mb-icon"><i></i><i></i></span>
+      <span class="mb-icon" aria-hidden="true"><i></i><i></i></span>
     </button>
   </header>
 
@@ -47,11 +42,11 @@
   <nav class="menu" id="menu" aria-label="Main menu">
     <div class="menu-inner">
       <ul class="menu-links">
-        <li><a href="#about"><small>01</small><span data-roll>About</span></a></li>
-        <li><a href="#impact"><small>02</small><span data-roll>Impact</span></a></li>
-        <li><a href="#experience"><small>03</small><span data-roll>Experience</span></a></li>
-        <li><a href="#stack"><small>04</small><span data-roll>Stack</span></a></li>
-        <li><a href="#contact"><small>05</small><span data-roll>Contact</span></a></li>
+        <li><a href="#about"><small aria-hidden="true">01</small><span data-roll>About</span></a></li>
+        <li><a href="#impact"><small aria-hidden="true">02</small><span data-roll>Impact</span></a></li>
+        <li><a href="#experience"><small aria-hidden="true">03</small><span data-roll>Experience</span></a></li>
+        <li><a href="#stack"><small aria-hidden="true">04</small><span data-roll>Stack</span></a></li>
+        <li><a href="#contact"><small aria-hidden="true">05</small><span data-roll>Contact</span></a></li>
       </ul>
       <div class="menu-foot">
         <a href="mailto:alfalahlazuardim@gmail.com">alfalahlazuardim@gmail.com</a>
@@ -67,7 +62,7 @@
     <section class="hero" id="hero">
       <canvas class="hero-gl" id="gl" aria-hidden="true"></canvas>
       <div class="hero-content">
-        <p class="hero-eyebrow"><span>Al Falah Lazuardi</span><span>Backend Engineer · Node.js · TypeScript · Golang</span></p>
+        <p class="hero-eyebrow"><span translate="no">Al Falah Lazuardi</span><span>Backend Engineer · Node.js · TypeScript · Golang</span></p>
         <h1 class="hero-title" data-cursor="grow">
           <span class="ht-line"><span>I ship fast</span></span>
           <span class="ht-line"><span>backends. <em>Then I</em></span></span>
@@ -90,36 +85,36 @@
     <div class="split">
       <aside class="side">
         <div class="side-top">
-          <h2 class="side-name">Al Falah<br>Lazuardi</h2>
+          <h2 class="side-name" translate="no">Al Falah<br>Lazuardi</h2>
           <p class="side-role">Backend Engineer</p>
           <p class="side-bio">I build fast, reliable backend systems — then make them faster.</p>
           <nav class="side-nav" aria-label="Sections">
-            <a href="#about"><i></i><span>About</span></a>
-            <a href="#impact"><i></i><span>Impact</span></a>
-            <a href="#experience"><i></i><span>Experience</span></a>
-            <a href="#stack"><i></i><span>Stack</span></a>
-            <a href="#education"><i></i><span>Education</span></a>
+            <a href="#about"><i aria-hidden="true"></i><span>About</span></a>
+            <a href="#impact"><i aria-hidden="true"></i><span>Impact</span></a>
+            <a href="#experience"><i aria-hidden="true"></i><span>Experience</span></a>
+            <a href="#stack"><i aria-hidden="true"></i><span>Stack</span></a>
+            <a href="#education"><i aria-hidden="true"></i><span>Education</span></a>
           </nav>
         </div>
         <div class="side-bottom">
-          <a href="mailto:alfalahlazuardim@gmail.com" class="side-link">alfalahlazuardim@gmail.com ↗</a>
+          <a href="mailto:alfalahlazuardim@gmail.com" class="side-link">alfalahlazuardim@gmail.com <span aria-hidden="true">↗</span></a>
           <a href="tel:+6285173009061" class="side-link">+62 851 7300 9061</a>
-          <span class="side-link muted">East Jakarta · Remote or relocate worldwide</span>
+          <span class="side-link">East Jakarta · Remote or relocate worldwide</span>
         </div>
       </aside>
 
-      <div class="content">
+      <div class="content" id="content" tabindex="-1">
 
         <!-- ABOUT -->
         <section class="block" id="about">
           <h3 class="block-label">About</h3>
           <p class="about-lead" data-words>
-            I've spent five years shipping <strong>backend systems in production</strong> —
+            I’ve spent five years shipping <strong>backend systems in production</strong> —
             ride-hailing, fintech, and government infrastructure.
           </p>
           <div class="about-text">
             <p data-fade>
-              My primary stack is Node.js and TypeScript; I've been writing Golang for microservices for the past two years.
+              My primary stack is Node.js and TypeScript; I’ve been writing Golang for microservices for the past two years.
             </p>
             <p data-fade>
               Performance is where I go deep. I cut API response time <strong>12×</strong>
@@ -130,7 +125,7 @@
             <p data-fade>
               I use <em>AI-assisted tooling</em> (Claude Code, GPT Codex) as a core part of
               my daily workflow — not occasionally, but as a productivity layer that lets me
-              move faster without cutting corners. I'm looking for
+              move faster without cutting corners. I’m looking for
               <strong>backend or software engineering roles worldwide</strong> —
               remote or on-site. Open to visa sponsorship where needed.
             </p>
@@ -150,25 +145,25 @@
               <div class="ic-top"><span>API throughput</span><span>01 / 04</span></div>
               <div class="ic-num" data-scramble="12×">12×</div>
               <p class="ic-desc">Rearchitected O(n²) offer filtering to O(n log n) — measured improvement, shipped to production.</p>
-              <div class="ic-bars"><div><span>before</span><i style="--w:8%"></i></div><div><span>after</span><i style="--w:100%"></i></div></div>
+              <div class="ic-bars" aria-hidden="true"><div><span>before</span><i style="--w:8%"></i></div><div><span>after</span><i style="--w:100%"></i></div></div>
             </article>
             <article class="icard ic-2">
               <div class="ic-top"><span>Query latency</span><span>02 / 04</span></div>
               <div class="ic-num" data-scramble="−60%">−60%</div>
               <p class="ic-desc">Targeted indexing and query rewrites on the Nuun project — zero downtime.</p>
-              <div class="ic-bars"><div><span>before</span><i style="--w:100%"></i></div><div><span>after</span><i style="--w:40%"></i></div></div>
+              <div class="ic-bars" aria-hidden="true"><div><span>before</span><i style="--w:100%"></i></div><div><span>after</span><i style="--w:40%"></i></div></div>
             </article>
             <article class="icard ic-3">
               <div class="ic-top"><span>Records per import job</span><span>03 / 04</span></div>
               <div class="ic-num" data-scramble="3,000+">3,000+</div>
               <p class="ic-desc">Up from 200 — found the N+1 bottleneck and moved to async processing with Laravel Queue.</p>
-              <div class="ic-bars"><div><span>before</span><i style="--w:7%"></i></div><div><span>after</span><i style="--w:100%"></i></div></div>
+              <div class="ic-bars" aria-hidden="true"><div><span>before</span><i style="--w:7%"></i></div><div><span>after</span><i style="--w:100%"></i></div></div>
             </article>
             <article class="icard ic-4">
               <div class="ic-top"><span>Daily transactions</span><span>04 / 04</span></div>
               <div class="ic-num" data-scramble="15,000+">15,000+</div>
               <p class="ic-desc">Warehouse &amp; logistics platform for PT HM Sampoerna — error rate down 85%, delivery success to 95%.</p>
-              <div class="ic-bars"><div><span>errors</span><i style="--w:15%"></i></div><div><span>delivery</span><i style="--w:95%"></i></div></div>
+              <div class="ic-bars" aria-hidden="true"><div><span>errors</span><i style="--w:15%"></i></div><div><span>delivery</span><i style="--w:95%"></i></div></div>
             </article>
           </div>
         </section>
@@ -181,7 +176,7 @@
             <li class="job" data-fade>
               <div class="job-when">2023 — Present</div>
               <div class="job-main">
-                <h4>Backend Engineer · <span>PT Code Development Indonesia</span> <b class="arrow">↗</b></h4>
+                <h4>Backend Engineer · <span>PT Code Development Indonesia</span> <b class="arrow" aria-hidden="true">↗</b></h4>
                 <ul>
                   <li>Designed and shipped the <em>Go-Semolis wallet service</em> from zero to production — full payment gateway integration, complete transaction lifecycle management.</li>
                   <li>Diagnosed query bottlenecks on the Nuun project and cut latency <strong>60%</strong> through targeted indexing and query rewrites — zero downtime.</li>
@@ -190,33 +185,33 @@
                   <li>Built multi-channel notification infrastructure (email/SMTP, push via Firebase, in-app) now used across multiple products.</li>
                   <li>Shipped real-time Hajj/Umrah pilgrim tracking service in Golang — PostgreSQL + Redis pub/sub for low-latency location updates.</li>
                 </ul>
-                <div class="pills"><span>Node.js</span><span>TypeScript</span><span>Golang</span><span>PostgreSQL</span><span>Redis</span><span>Firebase</span><span>AWS S3</span><span>PGP/AES-256</span></div>
+                <div class="pills" translate="no"><span>Node.js</span><span>TypeScript</span><span>Golang</span><span>PostgreSQL</span><span>Redis</span><span>Firebase</span><span>AWS S3</span><span>PGP/AES-256</span></div>
               </div>
             </li>
             <li class="job" data-fade>
               <div class="job-when">Aug 2023 — Aug 2024</div>
               <div class="job-main">
-                <h4>Backend Engineer · Contract · <span>PT Stafbook Teknologi Asia</span> <b class="arrow">↗</b></h4>
+                <h4>Backend Engineer · Contract · <span>PT Stafbook Teknologi Asia</span> <b class="arrow" aria-hidden="true">↗</b></h4>
                 <ul>
                   <li>Scaled employee import capacity from 200 to <strong>3,000+ records per job</strong> — identified N+1 bottleneck, moved to async processing with Laravel Queue, <strong>70% throughput gain</strong>.</li>
                   <li>Made payroll calculations <strong>10× faster</strong> on large datasets by eliminating cascading N+1 queries throughout the module.</li>
                   <li>Cut scheduling-related support tickets by <strong>80%</strong> by redesigning the scheduling logic from scratch instead of patching it.</li>
                   <li>Added real-time WebSocket notifications for long-running import jobs — users no longer had to guess when their data was ready.</li>
                 </ul>
-                <div class="pills"><span>Laravel</span><span>MySQL</span><span>Redis</span><span>WebSocket</span><span>Queue</span></div>
+                <div class="pills" translate="no"><span>Laravel</span><span>MySQL</span><span>Redis</span><span>WebSocket</span><span>Queue</span></div>
               </div>
             </li>
             <li class="job" data-fade>
               <div class="job-when">Mar 2020 — Jan 2023</div>
               <div class="job-main">
-                <h4>Backend Engineer · <span>PT Solu Filantropi Teknologi</span> <b class="arrow">↗</b></h4>
+                <h4>Backend Engineer · <span>PT Solu Filantropi Teknologi</span> <b class="arrow" aria-hidden="true">↗</b></h4>
                 <ul>
                   <li>Delivered a warehouse &amp; logistics platform for <em>PT HM Sampoerna</em> handling <strong>15,000+ daily transactions</strong> — brought error rate down by <strong>85%</strong> and delivery success to 95%.</li>
-                  <li>Cut manual processing by <strong>60%</strong> for <em>Indonesia's Ministry of Education</em> by automating fund disbursement tracking across 5,000 transactions.</li>
+                  <li>Cut manual processing by <strong>60%</strong> for <em>Indonesia’s Ministry of Education</em> by automating fund disbursement tracking across 5,000 transactions.</li>
                   <li>Increased order volume by <strong>30%</strong> for <em>PT Pertamina</em> by building a WhatsApp ordering bot (Twilio + Dialogflow) — no app install required for end users.</li>
-                  <li>Improved operational efficiency by <strong>80%</strong> for the <em>State Civil Service Commission's</em> complaint portal — Lumen backend, AngularJS frontend, Keycloak SSO.</li>
+                  <li>Improved operational efficiency by <strong>80%</strong> for the <em>State Civil Service Commission’s</em> complaint portal — Lumen backend, AngularJS frontend, Keycloak SSO.</li>
                 </ul>
-                <div class="pills"><span>Golang</span><span>Laravel</span><span>Lumen</span><span>PostgreSQL</span><span>Docker</span><span>Microservices</span></div>
+                <div class="pills" translate="no"><span>Golang</span><span>Laravel</span><span>Lumen</span><span>PostgreSQL</span><span>Docker</span><span>Microservices</span></div>
               </div>
             </li>
           </ol>
@@ -226,13 +221,13 @@
         <section class="block" id="stack">
           <h3 class="block-label">Stack</h3>
           <p class="block-intro" data-fade>5 years of daily production use — not just tutorials.</p>
-          <div class="orbit" id="orbit" data-cursor="grow">
+          <div class="orbit" id="orbit" data-cursor="grow" aria-hidden="true">
             <div class="orbit-core">
               <span class="oc-title" id="ocTitle">My stack</span>
               <span class="oc-sub" id="ocSub">hover a skill</span>
             </div>
           </div>
-          <div class="skill-groups" id="skillGroups">
+          <div class="skill-groups" id="skillGroups" translate="no">
             <div class="sg" data-level="Expert" data-ring="3">
               <span class="sg-k">Expert</span>
               <p><span>Node.js</span><span>TypeScript</span><span>Golang</span><span>Laravel / PHP</span><span>REST API</span><span>Microservices</span><span>PostgreSQL</span><span>MySQL</span><span>Redis</span><span>Git</span></p>
@@ -265,8 +260,8 @@
               <span class="edu-when">2017 — 2021</span>
               <div>
                 <h4>Computer Science Vocational</h4><p>SMK Negeri 26 Jakarta</p>
-                <p class="award">✦ 3rd Place · Web Design LKS SMK</p>
-                <p class="award">✦ 3rd Place · Smartschool SEACC Batch 3 (Southeast Asia)</p>
+                <p class="award"><span aria-hidden="true">✦ </span>3rd Place · Web Design LKS SMK</p>
+                <p class="award"><span aria-hidden="true">✦ </span>3rd Place · Smartschool SEACC Batch 3 (Southeast Asia)</p>
               </div>
             </div>
           </div>
@@ -277,25 +272,25 @@
 
     <!-- CONTACT -->
     <section class="contact" id="contact">
-      <p class="contact-kicker">Hiring a backend engineer? I'm available worldwide.</p>
-      <h2 class="contact-big" id="contactBig" aria-label="Let's talk">Let's talk</h2>
+      <p class="contact-kicker">Hiring a backend engineer? I’m available worldwide.</p>
+      <h2 class="contact-big" id="contactBig" aria-label="Let’s talk">Let’s talk</h2>
       <p class="contact-desc">
-        I'm actively looking for backend or software engineering roles worldwide —
+        I’m actively looking for backend or software engineering roles worldwide —
         remote or on-site. Available for full-time positions.
-        Open to visa sponsorship where needed — I'll handle the paperwork, you focus on the role.
+        Open to visa sponsorship where needed — I’ll handle the paperwork, you focus on the role.
       </p>
       <div class="contact-actions">
         <a href="mailto:alfalahlazuardim@gmail.com" class="glow-btn" data-magnetic data-cursor="grow">
           <span>alfalahlazuardim@gmail.com</span>
         </a>
-        <button type="button" class="ghost-btn" id="copyBtn" data-magnetic>Copy email</button>
+        <button type="button" class="ghost-btn" id="copyBtn" data-magnetic>Copy Email</button>
       </div>
       <div class="contact-meta">
-        <span>📍 East Jakarta, Indonesia</span>
-        <a href="tel:+6285173009061">📞 +62 851 7300 9061</a>
-        <span>💻 Remote-friendly</span>
-        <span>🌏 Open to relocate worldwide</span>
-        <span>📋 Visa sponsorship welcome</span>
+        <span><span aria-hidden="true">📍 </span>East Jakarta, Indonesia</span>
+        <a href="tel:+6285173009061"><span aria-hidden="true">📞 </span>+62 851 7300 9061</a>
+        <span><span aria-hidden="true">💻 </span>Remote-friendly</span>
+        <span><span aria-hidden="true">🌏 </span>Open to relocate worldwide</span>
+        <span><span aria-hidden="true">📋 </span>Visa sponsorship welcome</span>
       </div>
     </section>
 
@@ -304,15 +299,10 @@
   <footer class="footer">
     <span>© <span id="year">2026</span> Al Falah Lazuardi Mahmudi</span>
     <span>Backend Engineer · Jakarta</span>
-    <a href="#top" data-magnetic>Back to top ↑</a>
+    <a href="#top" data-magnetic>Back to Top <span aria-hidden="true">↑</span></a>
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="https://unpkg.com/lenis@1.1.13/dist/lenis.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-  <script src="assets/js/aurora.js"></script>
 </body>
 </html>
